@@ -28,8 +28,8 @@ func (te *ThermoEngine) StartSyncTemperature() {
 	te.ticker = time.NewTicker(1 * time.Second)
 	go func() {
 		for range te.ticker.C {
-			changedTemperature := te.tm.CurrentTemperature + (rand.Float64() * 10.0) - 5.0
-			te.tm.CurrentTemperature = math.Max(math.Min(changedTemperature, te.tm.MaxTemperature), te.tm.MinTemperature)
+			changedTemperature := te.tm.Temperature + (rand.Float64() * 10.0) - 5.0
+			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
 			te.tm.UpdatedAt = time.Now()
 		}
 	}()
