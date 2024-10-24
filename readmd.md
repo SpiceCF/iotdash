@@ -62,6 +62,8 @@ STACK : NEXTJS, TAILWIND
     - LINE CHART
 - JWT FOR AUTH
 
+![ui-design](./ui-design.excalidraw.svg)
+
 ## BACKEND
 
 STACK : GOLANG
