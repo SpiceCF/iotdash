@@ -8,6 +8,7 @@ import (
 
 type Thermometer struct {
 	ID                 uuid.UUID `json:"id" gorm:"primary_key"`
+	OwnerID            uuid.UUID `json:"owner_id" gorm:"not null"`
 	IPAddress          string    `json:"ip_address" gorm:"not null"`
 	Connection         string    `json:"connection" gorm:"not null"`
 	Connected          bool      `json:"connected" gorm:"not null"`
