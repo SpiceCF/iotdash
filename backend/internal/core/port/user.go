@@ -7,11 +7,11 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(user *domain.User) error
-	GetUserByID(id uuid.UUID) (*domain.User, error)
+	Create(user *domain.User) error
+	FindByID(id uuid.UUID) (*domain.User, error)
 }
 
 type UserService interface {
-	CreateUser(user *domain.User) error
-	GetUserByID(id uuid.UUID) (*domain.User, error)
+	Create(user *domain.User) error
+	FindByID(id uuid.UUID) (*domain.User, error)
 }

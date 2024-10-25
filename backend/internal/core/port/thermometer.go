@@ -15,7 +15,7 @@ type ThermometerRepository interface {
 }
 
 type ThermometerService interface {
-	Create(tm *domain.Thermometer) error
+	Create(ownerID uuid.UUID) error
 	Update(tm *domain.Thermometer) error
 	GetByID(id uuid.UUID) (*domain.Thermometer, error)
 	ListByUserID(userID uuid.UUID) ([]*domain.Thermometer, error)

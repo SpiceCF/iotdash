@@ -18,7 +18,7 @@ func NewThermometerService(tmr port.ThermometerRepository) *ThermometerService {
 	return &ThermometerService{tmr: tmr}
 }
 
-func (s *ThermometerService) Create(tm *domain.Thermometer) error {
+func (s *ThermometerService) Create(ownerID uuid.UUID) error {
 	return errors.New("not implemented")
 }
 

@@ -2,33 +2,43 @@ package main
 
 import (
 	"fmt"
+	"iotdash/backend/internal/app/handlers"
 	"iotdash/backend/internal/app/repositories/sqlite"
 	"iotdash/backend/internal/core/domain"
 	"iotdash/backend/internal/core/service"
+	"iotdash/backend/pkg/zaplog"
+	"net/http"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 func main() {
+	apiStart()
+}
+
+func apiStart() {
+	log, err := zaplog.NewLogger()
+	if err != nil {
+		panic(err)
+	}
+
 	db, err := sqlite.NewDB(":memory:")
 	if err != nil {
 		panic(err)
 	}
 
-	tmr := sqlite.NewThermometerRepository(db)
-
-	tmr.Create(&domain.Thermometer{
-		ID:          uuid.New(),
-		OwnerID:     uuid.New(),
-		IPAddress:   "192.168.1.100",
-		Connection:  "http://localhost:8080",
-		Temperature: 35,
-		Config: domain.ThermometerConfig{
-			MinTemperature: 0,
-			MaxTemperature: 100,
-		},
+	userRepository := sqlite.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
+	userHandler := handlers.NewUserHandler(userService)
+	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
+		userHandler,
 	})
+
+	log.Info("starting server on port 8080")
+	if err := e.Start(":8080"); err != http.ErrServerClosed {
+		log.Fatal(err.Error())
+	}
 }
 
 func simulateThermometer() {
