@@ -36,7 +36,7 @@ func (sr *SensorRepository) CreateSensorLog(sensorLog *domain.SensorLog) error {
 	return sr.db.Create(sensorLog).Error
 }
 
-func (sr *SensorRepository) ListSensorLogs(sensorID uuid.UUID) ([]*domain.SensorLog, error) {
+func (sr *SensorRepository) ListSensorLogs(deviceID uuid.UUID) ([]*domain.SensorLog, error) {
 	var sensorLogs []*domain.SensorLog
-	return sensorLogs, sr.db.Where(&domain.SensorLog{SensorID: sensorID}).Find(&sensorLogs).Error
+	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).Find(&sensorLogs).Error
 }

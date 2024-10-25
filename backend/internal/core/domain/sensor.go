@@ -25,6 +25,7 @@ const (
 
 type Sensor struct {
 	ID        uuid.UUID      `json:"id" gorm:"primary_key"`
+	DeviceID  uuid.UUID      `json:"device_id" gorm:"not null"`
 	Type      SensorType     `json:"type" gorm:"not null"`
 	Configs   []SensorConfig `json:"configs" gorm:"foreignKey:SensorID"`
 	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`
@@ -52,7 +53,7 @@ func (s *SensorConfig) BeforeCreate(tx *gorm.DB) error {
 
 type SensorLog struct {
 	ID         uuid.UUID      `json:"id" gorm:"primary_key"`
-	SensorID   uuid.UUID      `json:"sensor_id" gorm:"not null"`
+	DeviceID   uuid.UUID      `json:"device_id" gorm:"not null"`
 	SensorType SensorType     `json:"sensor_type" gorm:"not null"`
 	Value      datatypes.JSON `json:"value" gorm:"not null"`
 	Timestamp  time.Time      `json:"timestamp" gorm:"not null"`
