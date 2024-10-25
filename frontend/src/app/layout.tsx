@@ -1,6 +1,15 @@
+import { Kanit, Inter } from "next/font/google";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+
+const kanitFont = Kanit({
+  subsets: ["latin", "thai"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  preload: true,
+  variable: "--font-kanit",
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NavLink } from "@/components/dashboard/NavLink";
-import { UpgradeCard } from "@/components/dashboard/UpgradeCard";
 
 export function Sidebar() {
   return (
@@ -37,9 +36,7 @@ export function Sidebar() {
             <NavLink href="#" icon={LineChart} label="Analytics" />
           </nav>
         </div>
-        <div className="mt-auto p-4">
-          <UpgradeCard />
-        </div>
+        <div className="mt-auto p-4"></div>
       </div>
     </div>
   );
