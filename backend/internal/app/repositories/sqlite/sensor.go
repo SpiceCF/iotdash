@@ -29,7 +29,7 @@ func (sr *SensorRepository) GetSensorByID(id uuid.UUID) (*domain.Sensor, error) 
 
 func (sr *SensorRepository) ListSensorsByUserID(userID uuid.UUID) ([]*domain.Sensor, error) {
 	var sensors []*domain.Sensor
-	return sensors, sr.db.Where(&domain.UserSensor{UserID: userID}).Find(&sensors).Error
+	return sensors, sr.db.Where(&domain.Sensor{OwnerID: userID}).Find(&sensors).Error
 }
 
 func (sr *SensorRepository) CreateSensorLog(sensorLog *domain.SensorLog) error {
@@ -38,5 +38,5 @@ func (sr *SensorRepository) CreateSensorLog(sensorLog *domain.SensorLog) error {
 
 func (sr *SensorRepository) ListSensorLogs(deviceID uuid.UUID) ([]*domain.SensorLog, error) {
 	var sensorLogs []*domain.SensorLog
-	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).Find(&sensorLogs).Error
+	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).Find(&sensorLogs).Order("timestamp desc").Limit(10).Error
 }

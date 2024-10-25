@@ -15,7 +15,7 @@ type ThermometerConfig struct {
 
 type Thermometer struct {
 	ID          uuid.UUID         `json:"id" gorm:"primary_key"`
-	UserID      uuid.UUID         `json:"user_id" gorm:"not null"`
+	OwnerID     uuid.UUID         `json:"owner_id" gorm:"not null"`
 	IPAddress   string            `json:"ip_address" gorm:"not null"`
 	Connected   bool              `json:"connected" gorm:"not null"`
 	Temperature float64           `json:"temperature" gorm:"not null"`

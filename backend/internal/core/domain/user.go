@@ -16,8 +16,8 @@ type User struct {
 	Password     string         `json:"password" gorm:"not null"`
 	CreatedAt    time.Time      `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
-	Settings     []*UserSetting `json:"settings" gorm:"foreignKey:UserID;references:ID;"`
-	Sensors      []*Sensor      `json:"sensors" gorm:"foreignKey:UserID;references:ID;"`
+	Settings     []*UserSetting `json:"settings" gorm:"foreignKey:OwnerID;references:ID;"`
+	Sensors      []*Sensor      `json:"sensors" gorm:"foreignKey:OwnerID;references:ID;"`
 	Thermometers []*Thermometer `json:"thermometers" gorm:"foreignKey:OwnerID;references:ID;"`
 }
 
@@ -28,7 +28,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 
 type UserSetting struct {
 	ID        uuid.UUID      `json:"id" gorm:"primary_key"`
-	UserID    uuid.UUID      `json:"user_id" gorm:"not null"`
+	OwnerID   uuid.UUID      `json:"owner_id" gorm:"not null"`
 	Key       string         `json:"key" gorm:"not null"`
 	Value     datatypes.JSON `json:"value" gorm:"not null"`
 	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`

@@ -24,9 +24,7 @@ func NewDB(dsn string) (*gorm.DB, error) {
 		&domain.Sensor{},
 		&domain.SensorLog{},
 		&domain.SensorConfig{},
-		&domain.UserSensor{},
 		&domain.UserSetting{},
-		&domain.UserThermometer{},
 	)
 	db.AutoMigrate(
 		&domain.Thermometer{},
@@ -34,9 +32,7 @@ func NewDB(dsn string) (*gorm.DB, error) {
 		&domain.Sensor{},
 		&domain.SensorLog{},
 		&domain.SensorConfig{},
-		&domain.UserSensor{},
 		&domain.UserSetting{},
-		&domain.UserThermometer{},
 	)
 
 	return db, nil

@@ -32,7 +32,7 @@ func (h *SensorHandler) RegisterRoutes(e *echo.Group) {
 	rg := e.Group("/sensors")
 	rg.GET("", h.listSensors, h.middlewares.VerifyTokenMiddleware())
 	rg.POST("", h.createSensor, h.middlewares.VerifyTokenMiddleware())
-	rg.GET("/:id/logs", h.getSensorLogs, h.middlewares.VerifyTokenMiddleware())
+	rg.GET("/:id/logs", h.listSensorLogs, h.middlewares.VerifyTokenMiddleware())
 	rg.POST("/thermometers/logs", h.createSensorLog(domain.SensorTypeThermometer))
 }
 
@@ -55,7 +55,7 @@ func (h *SensorHandler) createSensor(c echo.Context) error {
 	}
 
 	sensor := &domain.Sensor{
-		UserID:   userID,
+		OwnerID:  userID,
 		DeviceID: reqBody.DeviceID,
 		Name:     reqBody.Name,
 		Type:     reqBody.Type,
@@ -79,13 +79,18 @@ func (h *SensorHandler) listSensors(c echo.Context) error {
 	return c.JSON(http.StatusOK, sns)
 }
 
-func (h *SensorHandler) getSensorLogs(c echo.Context) error {
+func (h *SensorHandler) listSensorLogs(c echo.Context) error {
 	sensorID, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	sensorLogs, err := h.sns.ListSensorLogs(sensorID)
+	sensor, err := h.sns.GetSensorByID(sensorID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	sensorLogs, err := h.sns.ListSensorLogs(sensor.DeviceID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}

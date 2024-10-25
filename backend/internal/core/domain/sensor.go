@@ -25,7 +25,7 @@ const (
 
 type Sensor struct {
 	ID        uuid.UUID       `json:"id" gorm:"primary_key"`
-	UserID    uuid.UUID       `json:"user_id" gorm:"not null"`
+	OwnerID   uuid.UUID       `json:"owner_id" gorm:"not null"`
 	DeviceID  uuid.UUID       `json:"device_id" gorm:"not null"`
 	Name      string          `json:"name" gorm:"not null"`
 	Type      SensorType      `json:"type" gorm:"not null"`
