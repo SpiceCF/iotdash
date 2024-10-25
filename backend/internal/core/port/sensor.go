@@ -10,6 +10,8 @@ type SensorRepository interface {
 	CreateSensor(sensor *domain.Sensor) error
 	GetSensorByID(id uuid.UUID) (*domain.Sensor, error)
 	ListSensorsByUserID(userID uuid.UUID) ([]*domain.Sensor, error)
+	CreateSensorLog(sensorLog *domain.SensorLog) error
+	ListSensorLogs(sensorID uuid.UUID) ([]*domain.SensorLog, error)
 }
 
 type SensorService interface {
@@ -17,4 +19,5 @@ type SensorService interface {
 	GetSensorByID(id uuid.UUID) (*domain.Sensor, error)
 	ListSensorsByUserID(userID uuid.UUID) ([]*domain.Sensor, error)
 	CreateSensorLog(sensorLog *domain.SensorLog) error
+	ListSensorLogs(sensorID uuid.UUID) ([]*domain.SensorLog, error)
 }

@@ -37,9 +37,13 @@ func apiStart() {
 	userService := service.NewUserService(userRepository)
 	authService := service.NewAuthService(userService)
 
+	sensorRepository := sqlite.NewSensorRepository(db)
+	sensorService := service.NewSensorService(sensorRepository)
+
 	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
 		handlers.NewAuthHandler(authService),
 		handlers.NewSimulatorHandler(simulatorService, thermometerService, authService),
+		handlers.NewSensorHandler(sensorService, authService),
 	})
 
 	log.Info("starting server on port 8080")

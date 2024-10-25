@@ -3,6 +3,7 @@ package thermoengine
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"iotdash/backend/internal/core/domain"
 	"math"
 	"math/rand/v2"
@@ -31,6 +32,8 @@ func (te *ThermoEngine) StartSyncTemperature() {
 			changedTemperature := te.tm.Temperature + (rand.Float64() * 10.0) - 5.0
 			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
 			te.tm.UpdatedAt = time.Now()
+			err := te.PushLog()
+			fmt.Println(err)
 		}
 	}()
 }
@@ -49,7 +52,7 @@ func (te *ThermoEngine) PushLog() error {
 		return err
 	}
 
-	resp, err := http.Post(te.tm.Config.Connection+"/api/v1/thermometer/log", "application/json", bytes.NewBuffer(json))
+	resp, err := http.Post(te.tm.Config.Connection, "application/json", bytes.NewBuffer(json))
 	if err != nil {
 		return err
 	}

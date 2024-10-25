@@ -11,13 +11,15 @@ import (
 
 var _ port.ThermometerSimulatorService = &ThermometerSimulatorService{}
 
+var engineInstances map[uuid.UUID]*thermoengine.ThermoEngine = make(map[uuid.UUID]*thermoengine.ThermoEngine)
+
 type ThermometerSimulatorService struct {
 	engines map[uuid.UUID]*thermoengine.ThermoEngine
 }
 
 func NewThermometerSimulatorService() *ThermometerSimulatorService {
 	return &ThermometerSimulatorService{
-		engines: make(map[uuid.UUID]*thermoengine.ThermoEngine),
+		engines: engineInstances,
 	}
 }
 
