@@ -17,9 +17,10 @@ func NewThermometerService(tmr port.ThermometerRepository) *ThermometerService {
 	return &ThermometerService{tmr: tmr}
 }
 
-func (s *ThermometerService) Create(ownerID uuid.UUID) (*domain.Thermometer, error) {
+func (s *ThermometerService) Create(ownerID uuid.UUID, config domain.ThermometerConfig) (*domain.Thermometer, error) {
 	thermometer := &domain.Thermometer{
 		OwnerID: ownerID,
+		Config:  config,
 	}
 
 	err := s.tmr.Create(thermometer)

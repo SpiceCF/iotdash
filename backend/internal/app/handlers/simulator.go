@@ -47,10 +47,19 @@ func (h *SimulatorHandler) listThermometers(c echo.Context) error {
 	return c.JSON(http.StatusOK, thermometers)
 }
 
+type CreateThermometerRequest struct {
+	ThermometerConfig domain.ThermometerConfig `json:"config"`
+}
+
 func (h *SimulatorHandler) createThermometer(c echo.Context) error {
 	userID := c.Get("userID").(uuid.UUID)
 
-	thermometer, err := h.ts.Create(userID)
+	var req CreateThermometerRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	thermometer, err := h.ts.Create(userID, req.ThermometerConfig)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}

@@ -49,3 +49,12 @@ Content-Type: application/json
 # @name list_thermometers
 GET http://localhost:8080/api/v1/simulator/thermometers
 Authorization: Bearer {{token}}
+
+
+###
+
+@thermometer_id = {{create_thermometer.response.body.id}}
+# @name start_engine
+POST http://localhost:8080/api/v1/simulator/thermometers/{{thermometer_id}}/start/
+Authorization: Bearer {{token}}
+
