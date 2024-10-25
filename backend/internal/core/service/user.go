@@ -24,3 +24,7 @@ func (s *UserService) Create(user *domain.User) error {
 func (s *UserService) FindByID(id uuid.UUID) (*domain.User, error) {
 	return s.ur.FindByID(id)
 }
+
+func (s *UserService) FindByUsername(username string) (*domain.User, error) {
+	return s.ur.FindByUsername(username)
+}

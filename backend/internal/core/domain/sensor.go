@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type SensorType string
@@ -29,6 +30,11 @@ type Sensor struct {
 	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
+func (s *Sensor) BeforeCreate(tx *gorm.DB) error {
+	s.ID = uuid.New()
+	return nil
+}
+
 type SensorConfig struct {
 	ID        uuid.UUID   `json:"id" gorm:"primary_key"`
 	SensorID  uuid.UUID   `json:"sensor_id" gorm:"not null"`
@@ -38,10 +44,20 @@ type SensorConfig struct {
 	UpdatedAt time.Time   `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
+func (s *SensorConfig) BeforeCreate(tx *gorm.DB) error {
+	s.ID = uuid.New()
+	return nil
+}
+
 type SensorLog struct {
 	ID         uuid.UUID   `json:"id" gorm:"primary_key"`
 	SensorID   uuid.UUID   `json:"sensor_id" gorm:"not null"`
 	SensorType SensorType  `json:"sensor_type" gorm:"not null"`
 	Value      interface{} `json:"value" gorm:"not null"`
 	Timestamp  time.Time   `json:"timestamp" gorm:"not null"`
+}
+
+func (s *SensorLog) BeforeCreate(tx *gorm.DB) error {
+	s.ID = uuid.New()
+	return nil
 }

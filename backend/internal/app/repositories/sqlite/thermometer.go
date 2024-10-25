@@ -28,15 +28,15 @@ func (r *ThermometerRepository) Update(thermometer *domain.Thermometer) error {
 
 func (r *ThermometerRepository) GetByID(id uuid.UUID) (*domain.Thermometer, error) {
 	var thermometer domain.Thermometer
-	if err := r.db.Where("id = ?", id).First(&thermometer).Error; err != nil {
+	if err := r.db.Where(&domain.Thermometer{ID: id}).First(&thermometer).Error; err != nil {
 		return nil, err
 	}
 	return &thermometer, nil
 }
 
-func (r *ThermometerRepository) ListByUserID(userID uuid.UUID) ([]*domain.Thermometer, error) {
+func (r *ThermometerRepository) ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error) {
 	var thermometers []*domain.Thermometer
-	if err := r.db.Where("owner_id = ?", userID).Find(&thermometers).Error; err != nil {
+	if err := r.db.Where(&domain.Thermometer{OwnerID: ownerID}).Find(&thermometers).Error; err != nil {
 		return nil, err
 	}
 	return thermometers, nil

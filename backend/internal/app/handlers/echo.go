@@ -19,9 +19,12 @@ func NewEcho(log *zap.Logger, handlers []EchoRouteHandler) *echo.Echo {
 	e.HideBanner = true
 	e.Use(echoLoggerMiddleware)
 
+	rg := e.Group("/api/v1")
+
 	for _, h := range handlers {
 		h.SetupLogger(log)
-		h.RegisterRoutes(e.Group("/api/v1"))
+		h.RegisterRoutes(rg)
 	}
+
 	return e
 }

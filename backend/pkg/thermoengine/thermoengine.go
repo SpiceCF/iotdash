@@ -49,7 +49,7 @@ func (te *ThermoEngine) PushLog() error {
 		return err
 	}
 
-	resp, err := http.Post(te.tm.Connection+"/api/v1/thermometer/log", "application/json", bytes.NewBuffer(json))
+	resp, err := http.Post(te.tm.Config.Connection+"/api/v1/thermometer/log", "application/json", bytes.NewBuffer(json))
 	if err != nil {
 		return err
 	}

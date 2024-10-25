@@ -29,3 +29,11 @@ func (r *UserRepository) FindByID(id uuid.UUID) (*domain.User, error) {
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) FindByUsername(username string) (*domain.User, error) {
+	var user domain.User
+	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

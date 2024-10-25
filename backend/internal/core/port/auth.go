@@ -1,7 +1,9 @@
 package port
 
-import "iotdash/backend/internal/core/domain"
+import "github.com/google/uuid"
 
 type AuthService interface {
-	Login(user *domain.User) (string, error)
+	Login(username, password string) (string, error)
+	VerifyToken(token string) (userID uuid.UUID, err error)
+	Register(fullName, email, username, password string) error
 }

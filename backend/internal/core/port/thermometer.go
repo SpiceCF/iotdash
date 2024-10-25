@@ -11,14 +11,14 @@ type ThermometerRepository interface {
 	Create(tm *domain.Thermometer) error
 	Update(tm *domain.Thermometer) error
 	GetByID(id uuid.UUID) (*domain.Thermometer, error)
-	ListByUserID(userID uuid.UUID) ([]*domain.Thermometer, error)
+	ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error)
 }
 
 type ThermometerService interface {
-	Create(ownerID uuid.UUID) error
+	Create(ownerID uuid.UUID) (*domain.Thermometer, error)
 	Update(tm *domain.Thermometer) error
 	GetByID(id uuid.UUID) (*domain.Thermometer, error)
-	ListByUserID(userID uuid.UUID) ([]*domain.Thermometer, error)
+	ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error)
 }
 
 type ThermometerSimulatorService interface {

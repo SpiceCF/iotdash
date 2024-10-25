@@ -1,0 +1,51 @@
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+	"fullName": "John Doe",
+	"email": "john.doe@example.com",
+	"username": "johndoe",
+	"password": "password"
+}
+
+###
+
+
+
+# @name login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+	"username": "johndoe",
+	"password": "password"
+}
+
+###
+
+@token = {{login.response.body.token}}
+
+# @name Verify_Token
+GET http://localhost:8080/api/v1/auth/verify-token
+Authorization: Bearer {{token}}
+
+### 
+
+# @name create_thermometer
+POST http://localhost:8080/api/v1/simulator/thermometers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+	"config": {
+		"connection": "http://localhost:8080",
+		"min_temperature": 0,
+		"max_temperature": 100
+	}
+}
+
+
+###
+# @name list_thermometers
+GET http://localhost:8080/api/v1/simulator/thermometers
+Authorization: Bearer {{token}}

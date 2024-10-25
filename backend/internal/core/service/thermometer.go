@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"iotdash/backend/internal/core/domain"
 	"iotdash/backend/internal/core/port"
 
@@ -18,18 +17,27 @@ func NewThermometerService(tmr port.ThermometerRepository) *ThermometerService {
 	return &ThermometerService{tmr: tmr}
 }
 
-func (s *ThermometerService) Create(ownerID uuid.UUID) error {
-	return errors.New("not implemented")
+func (s *ThermometerService) Create(ownerID uuid.UUID) (*domain.Thermometer, error) {
+	thermometer := &domain.Thermometer{
+		OwnerID: ownerID,
+	}
+
+	err := s.tmr.Create(thermometer)
+	if err != nil {
+		return nil, err
+	}
+
+	return thermometer, nil
 }
 
 func (s *ThermometerService) Update(tm *domain.Thermometer) error {
-	return errors.New("not implemented")
+	return s.tmr.Update(tm)
 }
 
 func (s *ThermometerService) GetByID(id uuid.UUID) (*domain.Thermometer, error) {
-	return nil, errors.New("not implemented")
+	return s.tmr.GetByID(id)
 }
 
-func (s *ThermometerService) ListByUserID(userID uuid.UUID) ([]*domain.Thermometer, error) {
-	return nil, errors.New("not implemented")
+func (s *ThermometerService) ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error) {
+	return s.tmr.ListByOwnerID(ownerID)
 }

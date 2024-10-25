@@ -28,11 +28,18 @@ func apiStart() {
 		panic(err)
 	}
 
+	thermometerRepository := sqlite.NewThermometerRepository(db)
+	thermometerService := service.NewThermometerService(thermometerRepository)
+
+	simulatorService := service.NewThermometerSimulatorService()
+
 	userRepository := sqlite.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
-	userHandler := handlers.NewUserHandler(userService)
+	authService := service.NewAuthService(userService)
+
 	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
-		userHandler,
+		handlers.NewAuthHandler(authService),
+		handlers.NewSimulatorHandler(simulatorService, thermometerService, authService),
 	})
 
 	log.Info("starting server on port 8080")
@@ -49,9 +56,9 @@ func simulateThermometer() {
 			{
 				ID:          uuid.New(),
 				IPAddress:   fmt.Sprintf("192.168.1.%d", i),
-				Connection:  "http://localhost:8080",
 				Temperature: 35,
 				Config: domain.ThermometerConfig{
+					Connection:     "http://localhost:8080",
 					MinTemperature: 0,
 					MaxTemperature: 100,
 				},
