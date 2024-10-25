@@ -37,24 +37,28 @@ func (h *SensorHandler) RegisterRoutes(e *echo.Group) {
 }
 
 type CreateSensorRequest struct {
-	ID   uuid.UUID         `json:"id"`
-	Name string            `json:"name"`
-	Type domain.SensorType `json:"type"`
+	DeviceID uuid.UUID         `json:"device_id"`
+	Name     string            `json:"name"`
+	Type     domain.SensorType `json:"type"`
 }
 
 func (h *SensorHandler) createSensor(c echo.Context) error {
+	userID := c.Get("userID").(uuid.UUID)
+
 	var reqBody CreateSensorRequest
 	if err := c.Bind(&reqBody); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	if reqBody.ID == uuid.Nil {
+	if reqBody.DeviceID == uuid.Nil {
 		return c.JSON(http.StatusBadRequest, "id is invalid")
 	}
 
 	sensor := &domain.Sensor{
-		ID:   reqBody.ID,
-		Type: reqBody.Type,
+		UserID:   userID,
+		DeviceID: reqBody.DeviceID,
+		Name:     reqBody.Name,
+		Type:     reqBody.Type,
 	}
 
 	if err := h.sns.CreateSensor(sensor); err != nil {
@@ -111,6 +115,6 @@ func (h *SensorHandler) createSensorLog(senserType domain.SensorType) echo.Handl
 			return c.JSON(http.StatusInternalServerError, err.Error())
 		}
 
-		return c.JSON(http.StatusOK, map[string]string{"message": "Sensor log created"})
+		return c.NoContent(http.StatusOK)
 	}
 }

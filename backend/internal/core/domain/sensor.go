@@ -24,12 +24,14 @@ const (
 )
 
 type Sensor struct {
-	ID        uuid.UUID      `json:"id" gorm:"primary_key"`
-	DeviceID  uuid.UUID      `json:"device_id" gorm:"not null"`
-	Type      SensorType     `json:"type" gorm:"not null"`
-	Configs   []SensorConfig `json:"configs" gorm:"foreignKey:SensorID"`
-	CreatedAt time.Time      `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
+	ID        uuid.UUID       `json:"id" gorm:"primary_key"`
+	UserID    uuid.UUID       `json:"user_id" gorm:"not null"`
+	DeviceID  uuid.UUID       `json:"device_id" gorm:"not null"`
+	Name      string          `json:"name" gorm:"not null"`
+	Type      SensorType      `json:"type" gorm:"not null"`
+	Configs   []*SensorConfig `json:"configs" gorm:"foreignKey:SensorID;references:ID;"`
+	CreatedAt time.Time       `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
 func (s *Sensor) BeforeCreate(tx *gorm.DB) error {
