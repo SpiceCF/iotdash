@@ -1,4 +1,3 @@
-import { addDynamicIconSelectors } from '@iconify/tailwind';
 import tailwindContainerQueryPlugin from '@tailwindcss/container-queries';
 import tailwindFormsPlugin from '@tailwindcss/forms';
 import tailwindTypographyPlugin from '@tailwindcss/typography';
@@ -101,9 +100,6 @@ const config: Config = {
     tailwindTypographyPlugin(),
     tailwindFormsPlugin({
       strategy: 'class',
-    }),
-    addDynamicIconSelectors({
-      scale: 1.2,
     }),
   ],
 };
