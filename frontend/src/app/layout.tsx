@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
+import { Kanit } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+const kanitFont = Kanit({
+  subsets: ["latin", "thai"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  preload: true,
+  variable: "--font-kanit",
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,9 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${kanitFont.variable} antialiased`}
       >
-        {children}
+        <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
   );
