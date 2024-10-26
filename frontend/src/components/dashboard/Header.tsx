@@ -1,9 +1,9 @@
 'use client';
 
-import { Menu, Search, CircleUser } from 'lucide-react';
+import { CircleUser, Menu, Search } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { Input } from '../ui/input';
+import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import { MobileNav } from './MobileNav';
 
 export function Header() {
   return (
-    <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-muted/40 px-6 py-4">
+    <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-6 py-4 lg:h-[60px]">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -51,9 +53,8 @@ export function Header() {
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
