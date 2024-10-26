@@ -56,7 +56,7 @@ export default function ActivityRadialBarChart() {
               color: 'hsl(var(--chart-3))',
             },
           }}
-          className="mx-auto aspect-square w-full max-w-[80%]"
+          className="aspect-square mx-auto w-full max-w-[80%]"
         >
           <RadialBarChart
             margin={{

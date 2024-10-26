@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { Badge } from '../ui/badge';
 import { LucideIcon } from 'lucide-react';
+
+import { Badge } from '../ui/badge';
 
 interface NavLinkProps {
   href: string;

@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import {
-  Package2,
   Home,
-  ShoppingCart,
-  Package,
-  Users,
   LineChart,
+  Package,
+  Package2,
+  ShoppingCart,
+  Users,
 } from 'lucide-react';
+
 import { NavLink } from './NavLink';
 import { UpgradeCard } from './UpgradeCard';
 
