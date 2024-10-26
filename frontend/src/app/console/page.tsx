@@ -1,4 +1,5 @@
-import React from "react";
+import React from 'react';
+
 import {
   ActiveEnergyBarChart,
   ActivityProgressBarChart,
@@ -8,7 +9,7 @@ import {
   StepsBarChart,
   TimeInBedAreaChart,
   WalkingDistanceBarChart,
-} from "@/components/charts";
+} from '@/components/charts';
 
 function Dashboard() {
   return (
