@@ -20,7 +20,7 @@ export default function ProgressBarChart() {
       <CardHeader>
         <CardTitle>Progress</CardTitle>
         <CardDescription>
-          You're average more steps a day this year than last year.
+          You&apos;re averaging more steps a day this year than last year.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
