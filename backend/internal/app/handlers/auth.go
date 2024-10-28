@@ -53,7 +53,7 @@ func (h *AuthHandler) login(c echo.Context) error {
 }
 
 type RegisterRequest struct {
-	FullName string `json:"fullName"`
+	FullName string `json:"full_name"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
 	Password string `json:"password"`
