@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,8 +16,17 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 import { ChevronDown, MoreHorizontal } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,6 +35,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
   Table,
@@ -73,7 +91,9 @@ const columns: ColumnDef<Device>[] = [
   {
     accessorKey: 'id',
     header: 'Device ID',
-    cell: ({ row }) => <div className="capitalize">{row.getValue('id')}</div>,
+    cell: ({ row }) => (
+      <div className="line-clamp-1 capitalize">{row.getValue('id')}</div>
+    ),
   },
   {
     accessorKey: 'status',
@@ -105,6 +125,15 @@ const columns: ColumnDef<Device>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => {
+                throw new Error(
+                  `Not implemented for setting action ${device.id}`
+                );
+              }}
+            >
+              Setting
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => {
                 throw new Error(
@@ -149,48 +178,53 @@ export default function Page() {
     },
     initialState: {
       pagination: {
-        pageSize: 2,
+        pageSize: 10,
       },
     },
   });
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter device names..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center justify-between gap-2 py-4">
+        <div className="flex gap-2">
+          <Input
+            placeholder="Filter device names..."
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            onChange={(event) =>
+              table.getColumn('name')?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="">
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="flex">
+          <AddDeviceDialog />
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -267,5 +301,84 @@ export default function Page() {
         </div>
       </div>
     </div>
+  );
+}
+
+const formSchemaAddDevice = z.object({
+  name: z.string().min(1, { message: 'Device name is required' }),
+  id: z.string().min(1, { message: 'Device ID is required' }),
+});
+
+function AddDeviceDialog() {
+  const formAddDevice = useForm<z.infer<typeof formSchemaAddDevice>>({
+    resolver: zodResolver(formSchemaAddDevice),
+    defaultValues: {
+      name: '',
+      id: '',
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchemaAddDevice>) {
+    console.log(values);
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Add Device</Button>
+      </DialogTrigger>
+      <DialogContent
+        aria-describedby="add-device-dialog"
+        onPointerDownOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogHeader>
+          <DialogTitle>Add Device</DialogTitle>
+        </DialogHeader>
+
+        <Form {...formAddDevice}>
+          <form
+            onSubmit={formAddDevice.handleSubmit(onSubmit)}
+            className="w-full space-y-4"
+          >
+            <div className="flex flex-row gap-4">
+              <FormField
+                control={formAddDevice.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Device Name*</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Example. Bedroom-01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={formAddDevice.control}
+                name="id"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Device ID*</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Example. 123e4567-e89b-12d3-a456-426614174000"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex justify-end">
+              <Button type="submit">Add Device</Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }

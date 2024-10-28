@@ -3,6 +3,7 @@
 import React from 'react';
 import { useParams, useSelectedLayoutSegments } from 'next/navigation';
 
+import { cn } from '@/lib/utils';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -34,7 +35,10 @@ function ConsoleBreadcrumb() {
             return (
               <React.Fragment key={index}>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href={url} className={breadcrumbClassName}>
+                  <BreadcrumbLink
+                    href={url}
+                    className={cn('hidden md:block', breadcrumbClassName)}
+                  >
                     {breadcrumbText}
                   </BreadcrumbLink>
                 </BreadcrumbItem>

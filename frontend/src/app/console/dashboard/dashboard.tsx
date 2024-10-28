@@ -21,12 +21,30 @@ import {
 import ActiveDeviceChart from '@/components/charts/ActiveDeviceChart';
 
 const lineChartData = [
-  { time: '13:00', Bedroom: 40, Kitchen: 55 },
-  { time: '14:00', Bedroom: 45, Kitchen: 60 },
-  { time: '15:00', Bedroom: 55, Kitchen: 65 },
-  { time: '16:00', Bedroom: 50, Kitchen: 60 },
-  { time: '17:00', Bedroom: 35, Kitchen: 60 },
-  { time: '18:00', Bedroom: 25, Kitchen: 55 },
+  { time: '00:00', Bedroom: 22, Kitchen: 25 },
+  { time: '01:00', Bedroom: 21, Kitchen: 24 },
+  { time: '02:00', Bedroom: 20, Kitchen: 23 },
+  { time: '03:00', Bedroom: 19, Kitchen: 22 },
+  { time: '04:00', Bedroom: 20, Kitchen: 23 },
+  { time: '05:00', Bedroom: 21, Kitchen: 24 },
+  { time: '06:00', Bedroom: 22, Kitchen: 25 },
+  { time: '07:00', Bedroom: 23, Kitchen: 26 },
+  { time: '08:00', Bedroom: 25, Kitchen: 35 },
+  { time: '09:00', Bedroom: 27, Kitchen: 37 },
+  { time: '10:00', Bedroom: 29, Kitchen: 39 },
+  { time: '11:00', Bedroom: 31, Kitchen: 41 },
+  { time: '12:00', Bedroom: 45, Kitchen: 55 },
+  { time: '13:00', Bedroom: 43, Kitchen: 53 },
+  { time: '14:00', Bedroom: 41, Kitchen: 51 },
+  { time: '15:00', Bedroom: 39, Kitchen: 49 },
+  { time: '16:00', Bedroom: 40, Kitchen: 50 },
+  { time: '17:00', Bedroom: 38, Kitchen: 48 },
+  { time: '18:00', Bedroom: 36, Kitchen: 46 },
+  { time: '19:00', Bedroom: 34, Kitchen: 44 },
+  { time: '20:00', Bedroom: 30, Kitchen: 40 },
+  { time: '21:00', Bedroom: 28, Kitchen: 38 },
+  { time: '22:00', Bedroom: 26, Kitchen: 36 },
+  { time: '23:00', Bedroom: 24, Kitchen: 34 },
 ];
 
 const alertLogData = [
@@ -85,14 +103,14 @@ export default function Dashboard() {
             config={{
               Bedroom: {
                 label: 'Bedroom',
-                color: 'hsl(var(--chart-1))',
+                color: 'hsl(var(--chart-3))',
               },
               Kitchen: {
                 label: 'Kitchen',
-                color: 'hsl(var(--chart-2))',
+                color: 'hsl(var(--chart-5))',
               },
             }}
-            className="h-[300px]"
+            className="aspect-auto h-60"
           >
             <LineChart
               data={lineChartData}
