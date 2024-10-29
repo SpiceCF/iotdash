@@ -9,9 +9,9 @@ import (
 )
 
 type CreateSensorRequest struct {
-	DeviceID uuid.UUID         `json:"device_id"`
-	Name     string            `json:"name"`
-	Type     domain.SensorType `json:"type"`
+	DeviceID uuid.UUID         `json:"device_id" example:"123e4567-e89b-12d3-a456-426614174000"`
+	Name     string            `json:"name" example:"bedroom"`
+	Type     domain.SensorType `json:"type" example:"thermometer"`
 }
 
 type CreateSensorResponse struct {

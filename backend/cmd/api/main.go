@@ -14,10 +14,6 @@ import (
 )
 
 func main() {
-	apiStart()
-}
-
-func apiStart() {
 	log, err := zaplog.NewLogger()
 	if err != nil {
 		panic(err)

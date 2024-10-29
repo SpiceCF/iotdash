@@ -2,17 +2,18 @@ package thermoengine
 
 import (
 	"crypto/rand"
-	"encoding/binary"
 	"iotdash/backend/internal/core/domain"
 	"log"
 	"math"
+	"math/big"
 	"time"
 
 	"github.com/go-resty/resty/v2"
 )
 
-const temperatureAdjustmentFactor = 10.0
-const temperatureOffset = 5.0
+const temperatureAdjustmentFactor = 10
+const temperatureOffset = 5
+const adjustmentMultiplier = 100
 
 type ThermoEngine struct {
 	tm     *domain.Thermometer
@@ -35,13 +36,13 @@ func (te *ThermoEngine) StartSyncTemperature() {
 	go func() {
 		defer te.ticker.Stop()
 		for range te.ticker.C {
-			var randomValue float64
-			err := binary.Read(rand.Reader, binary.LittleEndian, &randomValue)
+			randomInt, err := rand.Int(rand.Reader, big.NewInt(temperatureAdjustmentFactor*adjustmentMultiplier))
 			if err != nil {
 				log.Println(err)
 				return
 			}
-			changedTemperature := te.tm.Temperature + (randomValue * temperatureAdjustmentFactor) - temperatureOffset
+			randomFloat := float64(randomInt.Int64()) / float64(adjustmentMultiplier)
+			changedTemperature := te.tm.Temperature + randomFloat - float64(temperatureOffset)
 			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
 			te.tm.UpdatedAt = time.Now()
 			err = te.PushLog()
@@ -71,7 +72,7 @@ func (te *ThermoEngine) PushLog() error {
 		SensorType: domain.SensorTypeThermometer,
 		Key:        "temperature",
 		Value:      te.tm.Temperature,
-		Timestamp:  time.Now(),
+		Timestamp:  te.tm.UpdatedAt,
 	}
 
 	_, err := te.rc.R().
