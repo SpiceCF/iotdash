@@ -1,5 +1,8 @@
 # PILOT PROJECT
 
+
+![ui-design](./ui-design.excalidraw.svg)
+
 :: Authentication ::
 
 1. As a user, I want to register an account to access the dashboard.
