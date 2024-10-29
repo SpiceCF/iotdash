@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/zc2638/swag"
 	"go.uber.org/zap"
 )
 
@@ -28,12 +29,10 @@ func (h *SensorHandler) SetupLogger(log *zap.Logger) {
 	h.log = log
 }
 
-func (h *SensorHandler) RegisterRoutes(e *echo.Group) {
+func (h *SensorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg := e.Group("/sensors")
 	rg.GET("", h.listSensors, h.middlewares.VerifyTokenMiddleware())
 	rg.POST("", h.createSensor, h.middlewares.VerifyTokenMiddleware())
-	rg.GET("/:id/logs", h.listSensorLogs, h.middlewares.VerifyTokenMiddleware())
-	rg.POST("/thermometers/logs", h.createSensorLog(domain.SensorTypeThermometer))
 }
 
 type CreateSensorRequest struct {

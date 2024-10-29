@@ -78,10 +78,10 @@ func (s *AuthService) VerifyToken(tokenString string) (uuid.UUID, error) {
 	return uuid.MustParse(claims["sub"].(string)), nil
 }
 
-func (s *AuthService) Register(fullName, email, username, password string) error {
+func (s *AuthService) Register(fullName, email, username, password string) (uuid.UUID, error) {
 	passwordBcrypted, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return uuid.Nil, err
 	}
 
 	user := &domain.User{

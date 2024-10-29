@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/zc2638/swag"
 	"go.uber.org/zap"
 )
 
@@ -26,7 +27,7 @@ func (h *UserHandler) SetupLogger(log *zap.Logger) {
 	h.log = log
 }
 
-func (h *UserHandler) RegisterRoutes(e *echo.Group) {
+func (h *UserHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg := e.Group("/users", h.middlewares.VerifyTokenMiddleware())
 	rg.GET("/me", h.getMe)
 	rg.GET("/me/settings", h.getMeSettings)

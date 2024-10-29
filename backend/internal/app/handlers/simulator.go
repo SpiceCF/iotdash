@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/zc2638/swag"
 	"go.uber.org/zap"
 )
 
@@ -29,7 +30,7 @@ func (h *SimulatorHandler) SetupLogger(log *zap.Logger) {
 	h.log = log
 }
 
-func (h *SimulatorHandler) RegisterRoutes(e *echo.Group) {
+func (h *SimulatorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg := e.Group("/simulator/thermometers", h.middlewares.VerifyTokenMiddleware())
 	rg.GET("", h.listThermometers)
 	rg.POST("", h.createThermometer)

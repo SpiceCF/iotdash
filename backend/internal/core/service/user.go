@@ -17,7 +17,7 @@ func NewUserService(ur port.UserRepository) *UserService {
 	return &UserService{ur: ur}
 }
 
-func (s *UserService) Create(user *domain.User) error {
+func (s *UserService) Create(user *domain.User) (uuid.UUID, error) {
 	return s.ur.Create(user)
 }
 

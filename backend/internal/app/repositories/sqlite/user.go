@@ -18,8 +18,11 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (r *UserRepository) Create(user *domain.User) error {
-	return r.db.Create(user).Error
+func (r *UserRepository) Create(user *domain.User) (uuid.UUID, error) {
+	if err := r.db.Create(user).Error; err != nil {
+		return uuid.Nil, err
+	}
+	return user.ID, nil
 }
 
 func (r *UserRepository) FindByID(id uuid.UUID) (*domain.User, error) {

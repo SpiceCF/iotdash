@@ -17,7 +17,7 @@ func NewDB(dsn string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	db = db.Debug()
+	// db = db.Debug()
 	db.Migrator().DropTable(
 		// &domain.User{},
 		&domain.Thermometer{},

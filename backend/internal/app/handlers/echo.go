@@ -6,12 +6,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/zc2638/swag"
+	"github.com/zc2638/swag/option"
 	"go.uber.org/zap"
 )
 
 type EchoRouteHandler interface {
 	SetupLogger(log *zap.Logger)
-	RegisterRoutes(e *echo.Group)
+	RegisterRoutes(e *echo.Group, api *swag.API)
 }
 
 func NewEcho(log *zap.Logger, handlers []EchoRouteHandler) *echo.Echo {
@@ -30,10 +32,18 @@ func NewEcho(log *zap.Logger, handlers []EchoRouteHandler) *echo.Echo {
 		return c.JSON(http.StatusOK, map[string]string{"status": "healthy"})
 	})
 
+	api := swag.New(
+		option.Title("Example API Doc"),
+		option.BasePath("/api/v1"),
+	)
+
 	for _, h := range handlers {
 		h.SetupLogger(log)
-		h.RegisterRoutes(rg)
+		h.RegisterRoutes(rg, api)
 	}
+
+	e.GET("/swagger/json", echo.WrapHandler(api.Handler()))
+	e.GET("/swagger/ui/*", echo.WrapHandler(swag.UIHandler("/swagger/ui", "/swagger/json", true)))
 
 	return e
 }
