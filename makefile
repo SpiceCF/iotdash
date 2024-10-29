@@ -4,7 +4,7 @@ frontend-dev:
 
 .PHONY: backend-dev
 backend-dev:
-	cd backend && go run cmd/api/main.go
+	cd backend && make backend-dev
 
 .PHONY: genmock-port
 genmock-port:

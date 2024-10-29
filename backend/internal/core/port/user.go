@@ -10,10 +10,12 @@ type UserRepository interface {
 	Create(user *domain.User) error
 	FindByID(id uuid.UUID) (*domain.User, error)
 	FindByUsername(username string) (*domain.User, error)
+	ListSettings(userID uuid.UUID) ([]domain.UserSetting, error)
 }
 
 type UserService interface {
 	Create(user *domain.User) error
 	FindByID(id uuid.UUID) (*domain.User, error)
 	FindByUsername(username string) (*domain.User, error)
+	ListSettings(userID uuid.UUID) ([]domain.UserSetting, error)
 }

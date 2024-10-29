@@ -1,4 +1,4 @@
-openapi: "3.0.3"
+openapi: 3.0.0
 
 info:
   title: IOT DASHBOARD SENSOR MONITORING API
@@ -31,6 +31,8 @@ paths:
                     example: healthy
   /auth/login:
     post:
+      tags:
+        - Auth
       operationId: login
       requestBody:
         $ref: "#/components/requestBodies/LoginRequestBody"
@@ -40,6 +42,8 @@ paths:
           $ref: "#/components/responses/LoginResponse"
   /auth/register:
     post:
+      tags:
+        - Auth
       operationId: register
       requestBody:
         $ref: "#/components/requestBodies/RegisterRequestBody"
@@ -47,13 +51,25 @@ paths:
         "200":
           description: Register
           $ref: "#/components/responses/RegisterResponse"
+
   /users/me:
     get:
+      tags:
+        - User
       operationId: getMe
       responses:
         "200":
           description: Me
           $ref: "#/components/responses/GetMeResponse"
+  /users/me/settings:
+    get:
+      tags:
+        - User
+      operationId: getMeSettings
+      responses:
+        "200":
+          description: User settings
+          $ref: "#/components/responses/GetMeSettingsResponse"
 
 components:
   securitySchemes:
@@ -83,6 +99,14 @@ components:
           schema:
             $ref: "#/components/schemas/User"
   responses:
+    GetMeSettingsResponse:
+      description: Me settings response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/UserSetting"
     GetMeResponse:
       description: Me response
       content:
@@ -94,10 +118,12 @@ components:
       content:
         application/json:
           schema:
+            type: object
             properties:
               token:
                 type: string
                 example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMTUzNDEsInN1YiI6ImViYjkxZWM4LTJmN2ItNDIwZC04ODExLWY4OGFiZDZkOTU5MyJ9.-Qz_xvGxwdCMaFWuQ7x1qFbdsGnNiDBATU6c6g0Diiw"
+
     RegisterResponse:
       description: Register response
       content:

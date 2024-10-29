@@ -28,3 +28,7 @@ func (s *UserService) FindByID(id uuid.UUID) (*domain.User, error) {
 func (s *UserService) FindByUsername(username string) (*domain.User, error) {
 	return s.ur.FindByUsername(username)
 }
+
+func (s *UserService) ListSettings(userID uuid.UUID) ([]domain.UserSetting, error) {
+	return s.ur.ListSettings(userID)
+}

@@ -18,7 +18,7 @@ func apiStart() {
 		panic(err)
 	}
 
-	db, err := sqlite.NewDB(":memory:")
+	db, err := sqlite.NewDB("./.cache/db.sqlite")
 	if err != nil {
 		panic(err)
 	}

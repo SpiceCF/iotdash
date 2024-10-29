@@ -37,3 +37,11 @@ func (r *UserRepository) FindByUsername(username string) (*domain.User, error) {
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) ListSettings(userID uuid.UUID) ([]domain.UserSetting, error) {
+	var settings []domain.UserSetting
+	if err := r.db.Where("owner_id = ?", userID).Find(&settings).Error; err != nil {
+		return nil, err
+	}
+	return settings, nil
+}
