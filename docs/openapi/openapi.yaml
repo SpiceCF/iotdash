@@ -17,11 +17,21 @@ security:
 paths:
   /healthcheck:
     get:
+      operationId: healthcheck
       responses:
-        "200":
+        200:
           description: Healthcheck
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
   /auth/login:
     post:
+      operationId: login
       requestBody:
         $ref: "#/components/requestBodies/LoginRequestBody"
       responses:
@@ -30,6 +40,7 @@ paths:
           $ref: "#/components/responses/LoginResponse"
   /auth/register:
     post:
+      operationId: register
       requestBody:
         $ref: "#/components/requestBodies/RegisterRequestBody"
       responses:
@@ -38,6 +49,7 @@ paths:
           $ref: "#/components/responses/RegisterResponse"
   /users/me:
     get:
+      operationId: getMe
       responses:
         "200":
           description: Me
@@ -60,8 +72,10 @@ components:
             properties:
               username:
                 type: string
+                example: johndoe
               password:
                 type: string
+                example: password
     RegisterRequestBody:
       description: Register request body
       content:
@@ -80,7 +94,10 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/User"
+            properties:
+              token:
+                type: string
+                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzAyMTUzNDEsInN1YiI6ImViYjkxZWM4LTJmN2ItNDIwZC04ODExLWY4OGFiZDZkOTU5MyJ9.-Qz_xvGxwdCMaFWuQ7x1qFbdsGnNiDBATU6c6g0Diiw"
     RegisterResponse:
       description: Register response
       content:

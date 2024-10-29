@@ -33,11 +33,11 @@ func (h *UserHandler) RegisterRoutes(e *echo.Group) {
 
 func (h *UserHandler) getMe(c echo.Context) error {
 	userID := c.Get("userID").(uuid.UUID)
-
 	user, err := h.us.FindByID(userID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
+	user.Password = ""
 
 	return c.JSON(http.StatusOK, user)
 }

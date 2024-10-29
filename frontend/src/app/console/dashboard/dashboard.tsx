@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Label,
-  Line,
-  LineChart,
-  PolarRadiusAxis,
-  RadialBar,
-  RadialBarChart,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import { Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
