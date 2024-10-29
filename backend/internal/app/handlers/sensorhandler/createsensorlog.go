@@ -7,8 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type CreateThermometerLogRequest *domain.SensorLog
-
+type CreateThermometerLogRequest struct {
+	domain.SensorLog
+	Timestamp string `json:"timestamp" example:"2024-10-29T22:40:03.410461+07:00"`
+}
 type CreateThermometerLogResponse struct {
 	Status  string `json:"status" example:"success"`
 	Message string `json:"message" example:"Sensor log created"`
@@ -16,7 +18,7 @@ type CreateThermometerLogResponse struct {
 
 func (h *SensorHandler) createThermometerLog() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var sensorLog CreateThermometerLogRequest
+		var sensorLog *domain.SensorLog
 		if err := c.Bind(&sensorLog); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
