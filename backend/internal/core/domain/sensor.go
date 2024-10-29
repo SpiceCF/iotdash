@@ -34,7 +34,7 @@ type Sensor struct {
 	UpdatedAt time.Time       `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
-func (s *Sensor) BeforeCreate(tx *gorm.DB) error {
+func (s *Sensor) BeforeCreate(_ *gorm.DB) error {
 	s.ID = uuid.New()
 	return nil
 }
@@ -48,20 +48,21 @@ type SensorConfig struct {
 	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
-func (s *SensorConfig) BeforeCreate(tx *gorm.DB) error {
+func (s *SensorConfig) BeforeCreate(_ *gorm.DB) error {
 	s.ID = uuid.New()
 	return nil
 }
 
 type SensorLog struct {
-	ID         uuid.UUID      `json:"id" gorm:"primary_key"`
-	DeviceID   uuid.UUID      `json:"device_id" gorm:"not null"`
-	SensorType SensorType     `json:"sensor_type" gorm:"not null"`
-	Value      datatypes.JSON `json:"value" gorm:"not null"`
-	Timestamp  time.Time      `json:"timestamp" gorm:"not null"`
+	ID         uuid.UUID  `json:"id" gorm:"primary_key"`
+	DeviceID   uuid.UUID  `json:"device_id" gorm:"not null" example:"123e4567-e89b-12d3-a456-426614174000"`
+	SensorType SensorType `json:"sensor_type" gorm:"not null" example:"thermometer"`
+	Key        string     `json:"key" gorm:"not null" example:"temperature"`
+	Value      float64    `json:"value" gorm:"not null" example:"25.5"`
+	Timestamp  time.Time  `json:"timestamp" gorm:"not null"`
 }
 
-func (s *SensorLog) BeforeCreate(tx *gorm.DB) error {
+func (s *SensorLog) BeforeCreate(_ *gorm.DB) error {
 	s.ID = uuid.New()
 	return nil
 }

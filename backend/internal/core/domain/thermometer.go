@@ -8,9 +8,9 @@ import (
 )
 
 type ThermometerConfig struct {
-	Connection     string  `json:"connection" gorm:"not null"`
-	MinTemperature float64 `json:"min_temperature" gorm:"not null"`
-	MaxTemperature float64 `json:"max_temperature" gorm:"not null"`
+	Connection     string  `json:"connection" gorm:"not null" example:"http://localhost:8080/api/v1/sensors/thermometer/logs"`
+	MinTemperature float64 `json:"min_temperature" gorm:"not null" example:"10"`
+	MaxTemperature float64 `json:"max_temperature" gorm:"not null" example:"100"`
 }
 
 type Thermometer struct {
@@ -25,7 +25,7 @@ type Thermometer struct {
 	UpdatedAt   time.Time         `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
-func (t *Thermometer) BeforeCreate(tx *gorm.DB) error {
+func (t *Thermometer) BeforeCreate(_ *gorm.DB) error {
 	t.ID = uuid.New()
 	return nil
 }

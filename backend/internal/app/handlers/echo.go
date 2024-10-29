@@ -35,6 +35,13 @@ func NewEcho(log *zap.Logger, handlers []EchoRouteHandler) *echo.Echo {
 	api := swag.New(
 		option.Title("Example API Doc"),
 		option.BasePath("/api/v1"),
+		option.Security("BearerAuth"),
+		option.SecurityScheme("BearerAuth", func(scheme *swag.SecurityScheme) {
+			scheme.Type = "apiKey"
+			scheme.In = "header"
+			scheme.Name = "Authorization"
+			scheme.Description = "JWT obtained by logging in"
+		}),
 	)
 
 	for _, h := range handlers {

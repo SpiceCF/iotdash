@@ -1,39 +1,58 @@
 package thermoengine
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
+	"crypto/rand"
+	"encoding/binary"
 	"iotdash/backend/internal/core/domain"
+	"log"
 	"math"
-	"math/rand/v2"
-	"net/http"
 	"time"
+
+	"github.com/go-resty/resty/v2"
 )
+
+const temperatureAdjustmentFactor = 10.0
+const temperatureOffset = 5.0
 
 type ThermoEngine struct {
 	tm     *domain.Thermometer
 	ticker *time.Ticker
+	rc     *resty.Client
 }
 
 func NewThermoEngine(tm *domain.Thermometer) *ThermoEngine {
-	return &ThermoEngine{tm: tm}
+	client := resty.New()
+
+	return &ThermoEngine{tm: tm, rc: client}
 }
 
 func (te *ThermoEngine) StartSyncTemperature() {
-
 	if te.ticker != nil {
 		te.ticker.Stop()
 	}
 
 	te.ticker = time.NewTicker(1 * time.Second)
 	go func() {
+		defer te.ticker.Stop()
 		for range te.ticker.C {
-			changedTemperature := te.tm.Temperature + (rand.Float64() * 10.0) - 5.0
+			var randomValue float64
+			err := binary.Read(rand.Reader, binary.LittleEndian, &randomValue)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			changedTemperature := te.tm.Temperature + (randomValue * temperatureAdjustmentFactor) - temperatureOffset
 			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
 			te.tm.UpdatedAt = time.Now()
-			err := te.PushLog()
-			fmt.Println(err)
+			err = te.PushLog()
+			if err != nil {
+				te.tm.Connected = false
+				log.Println(err)
+				return
+			}
+			if !te.tm.Connected {
+				te.tm.Connected = true
+			}
 		}
 	}()
 }
@@ -47,16 +66,21 @@ func (te *ThermoEngine) GetThermometer() *domain.Thermometer {
 }
 
 func (te *ThermoEngine) PushLog() error {
-	json, err := json.Marshal(te.tm)
-	if err != nil {
-		return err
+	sLog := &domain.SensorLog{
+		DeviceID:   te.tm.ID,
+		SensorType: domain.SensorTypeThermometer,
+		Key:        "temperature",
+		Value:      te.tm.Temperature,
+		Timestamp:  time.Now(),
 	}
 
-	resp, err := http.Post(te.tm.Config.Connection, "application/json", bytes.NewBuffer(json))
+	_, err := te.rc.R().
+		SetBody(sLog).
+		Post(te.tm.Config.Connection)
+
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
 	return nil
 }

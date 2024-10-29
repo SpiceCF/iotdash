@@ -4,6 +4,8 @@ import (
 	"errors"
 	"iotdash/backend/internal/app/handlers"
 	"iotdash/backend/internal/app/handlers/authhandler"
+	"iotdash/backend/internal/app/handlers/sensorhandler"
+	"iotdash/backend/internal/app/handlers/simulatorhandler"
 	"iotdash/backend/internal/app/handlers/userhandler"
 	"iotdash/backend/internal/app/repositories/sqlite"
 	"iotdash/backend/internal/core/service"
@@ -40,8 +42,8 @@ func apiStart() {
 
 	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
 		authhandler.New(authService),
-		handlers.NewSimulatorHandler(simulatorService, thermometerService, authService),
-		handlers.NewSensorHandler(sensorService, authService),
+		simulatorhandler.New(simulatorService, thermometerService, authService),
+		sensorhandler.New(sensorService, authService),
 		userhandler.New(userService, authService),
 	})
 

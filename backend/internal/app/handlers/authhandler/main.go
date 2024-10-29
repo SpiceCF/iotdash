@@ -33,7 +33,6 @@ func (h *AuthHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg.POST("/register", h.register)
 
 	ag := api.WithGroup("/auth")
-
 	ag.AddEndpoint(
 		endpoint.New(
 			http.MethodPost, "/login",
