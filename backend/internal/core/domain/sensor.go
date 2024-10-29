@@ -17,7 +17,7 @@ const (
 type SensorStatus string
 
 const (
-	// Thermometer
+	// Thermometer.
 	ThermometerStatusNormal   SensorStatus = "normal"
 	ThermometerStatusWarning  SensorStatus = "warning"
 	ThermometerStatusCritical SensorStatus = "critical"

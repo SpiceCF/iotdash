@@ -1,7 +1,10 @@
 package main
 
 import (
+	"errors"
 	"iotdash/backend/internal/app/handlers"
+	"iotdash/backend/internal/app/handlers/authhandler"
+	"iotdash/backend/internal/app/handlers/userhandler"
 	"iotdash/backend/internal/app/repositories/sqlite"
 	"iotdash/backend/internal/core/service"
 	"iotdash/backend/pkg/zaplog"
@@ -36,14 +39,14 @@ func apiStart() {
 	sensorService := service.NewSensorService(sensorRepository)
 
 	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
-		handlers.NewAuthHandler(authService),
+		authhandler.New(authService),
 		handlers.NewSimulatorHandler(simulatorService, thermometerService, authService),
 		handlers.NewSensorHandler(sensorService, authService),
-		handlers.NewUserHandler(userService, authService),
+		userhandler.New(userService, authService),
 	})
 
 	log.Info("starting server on port 8080")
-	if err := e.Start(":8080"); err != http.ErrServerClosed {
+	if err = e.Start(":8080"); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err.Error())
 	}
 }

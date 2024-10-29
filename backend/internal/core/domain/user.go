@@ -21,7 +21,7 @@ type User struct {
 	UpdatedAt    time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {
+func (u *User) BeforeCreate(_ *gorm.DB) error {
 	u.ID = uuid.New()
 	return nil
 }
@@ -35,7 +35,7 @@ type UserSetting struct {
 	UpdatedAt time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
-func (u *UserSetting) BeforeCreate(tx *gorm.DB) error {
+func (u *UserSetting) BeforeCreate(_ *gorm.DB) error {
 	u.ID = uuid.New()
 	return nil
 }
