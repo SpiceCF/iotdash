@@ -18,22 +18,27 @@ func NewDB(dsn string) (*gorm.DB, error) {
 	}
 
 	// db = db.Debug()
-	db.Migrator().DropTable(
-		// &domain.User{},
+	if err = db.Migrator().DropTable(
+		&domain.User{},
 		&domain.Thermometer{},
 		&domain.Sensor{},
 		&domain.SensorLog{},
 		&domain.SensorConfig{},
 		&domain.UserSetting{},
-	)
-	db.AutoMigrate(
+	); err != nil {
+		return nil, err
+	}
+
+	if err = db.AutoMigrate(
 		&domain.Thermometer{},
 		&domain.User{},
 		&domain.Sensor{},
 		&domain.SensorLog{},
 		&domain.SensorConfig{},
 		&domain.UserSetting{},
-	)
+	); err != nil {
+		return nil, err
+	}
 
 	return db, nil
 }

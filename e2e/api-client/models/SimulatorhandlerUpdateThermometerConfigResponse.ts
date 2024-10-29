@@ -27,10 +27,10 @@ export interface SimulatorhandlerUpdateThermometerConfigResponse {
     message?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SimulatorhandlerUpdateThermometerConfigResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

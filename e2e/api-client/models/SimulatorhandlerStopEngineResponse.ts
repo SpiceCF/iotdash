@@ -27,10 +27,10 @@ export interface SimulatorhandlerStopEngineResponse {
     message?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SimulatorhandlerStopEngineResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

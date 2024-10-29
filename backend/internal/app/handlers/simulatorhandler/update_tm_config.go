@@ -14,7 +14,7 @@ type UpdateThermometerConfigRequest struct {
 }
 
 type UpdateThermometerConfigResponse struct {
-	Status  string `json:"status" example:"success"`
+	Status  int    `json:"status" example:"200"`
 	Message string `json:"message" example:"Thermometer config updated"`
 }
 
@@ -48,7 +48,7 @@ func (h *SimulatorHandler) updateThermometerConfig(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, UpdateThermometerConfigResponse{
-		Status:  "success",
+		Status:  http.StatusOK,
 		Message: fmt.Sprintf("Thermometer %s config updated", id),
 	})
 }

@@ -9,7 +9,7 @@ import (
 )
 
 type StartEngineResponse struct {
-	Status  string `json:"status" example:"success"`
+	Status  int    `json:"status" example:"200"`
 	Message string `json:"message" example:"Engine started"`
 }
 
@@ -26,7 +26,7 @@ func (h *SimulatorHandler) startEngine(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, StartEngineResponse{
-		Status:  "success",
+		Status:  http.StatusOK,
 		Message: fmt.Sprintf("Thermometer %s engine started", id),
 	})
 }

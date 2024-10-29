@@ -12,7 +12,7 @@ type CreateThermometerLogRequest struct {
 	Timestamp string `json:"timestamp" example:"2024-10-29T22:40:03.410461+07:00"`
 }
 type CreateThermometerLogResponse struct {
-	Status  string `json:"status" example:"success"`
+	Status  int    `json:"status" example:"200"`
 	Message string `json:"message" example:"Sensor log created"`
 }
 
@@ -28,7 +28,7 @@ func (h *SensorHandler) createThermometerLog() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, CreateThermometerLogResponse{
-			Status:  "success",
+			Status:  http.StatusOK,
 			Message: "Sensor log created",
 		})
 	}

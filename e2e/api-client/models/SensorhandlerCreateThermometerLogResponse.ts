@@ -27,10 +27,10 @@ export interface SensorhandlerCreateThermometerLogResponse {
     message?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SensorhandlerCreateThermometerLogResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

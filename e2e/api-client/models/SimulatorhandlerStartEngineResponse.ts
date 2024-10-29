@@ -27,10 +27,10 @@ export interface SimulatorhandlerStartEngineResponse {
     message?: string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SimulatorhandlerStartEngineResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**
