@@ -122,7 +122,9 @@
             "name": "body",
             "description": "CreateSensorLogRequest",
             "required": true,
-            "schema": { "$ref": "#/definitions/ptr" }
+            "schema": {
+              "$ref": "#/definitions/sensorhandlerCreateThermometerLogRequest"
+            }
           }
         ],
         "responses": {
@@ -437,7 +439,10 @@
         "id": {},
         "key": { "type": "string", "example": "temperature" },
         "sensor_type": { "type": "string", "example": "thermometer" },
-        "timestamp": { "$ref": "#/definitions/timeTime" },
+        "timestamp": {
+          "$ref": "#/definitions/timeTime",
+          "example": "2024-10-29T22:40:03.410461+07:00"
+        },
         "value": { "type": "number", "format": "double", "example": "25.5" }
       }
     },
@@ -512,7 +517,6 @@
         }
       }
     },
-    "ptr": { "type": "" },
     "sensorhandlerCreateSensorRequest": {
       "type": "object",
       "properties": {
@@ -526,6 +530,20 @@
       "properties": {
         "data": { "$ref": "#/definitions/domainSensor" },
         "status": { "type": "string", "example": "success" }
+      }
+    },
+    "sensorhandlerCreateThermometerLogRequest": {
+      "type": "object",
+      "properties": {
+        "device_id": { "example": "123e4567-e89b-12d3-a456-426614174000" },
+        "id": {},
+        "key": { "type": "string", "example": "temperature" },
+        "sensor_type": { "type": "string", "example": "thermometer" },
+        "timestamp": {
+          "type": "string",
+          "example": "2024-10-29T22:40:03.410461+07:00"
+        },
+        "value": { "type": "number", "format": "double", "example": "25.5" }
       }
     },
     "sensorhandlerCreateThermometerLogResponse": {
@@ -572,7 +590,7 @@
       "type": "object",
       "properties": {
         "data": { "$ref": "#/definitions/domainThermometerConfig" },
-        "status": { "type": "string" }
+        "status": { "type": "string", "example": "success" }
       }
     },
     "simulatorhandlerListThermometersResponse": {

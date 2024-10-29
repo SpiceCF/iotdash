@@ -1,22 +1,23 @@
-import { DefaultApi } from "./api-client/apis";
-import { Configuration } from "./api-client/runtime";
+import { AuthApi, Configuration } from "./api-client";
 
 describe("DefaultApi Test Suite", () => {
-  let api: DefaultApi;
+  let api: AuthApi;
   let accessToken: string;
 
   beforeAll(() => {
     const config = new Configuration({
-      basePath: "https://httpbin.org/anything",
-      accessToken: accessToken,
+      basePath: "http://localhost:8080/api/v1",
+      apiKey(name) {
+        return "Bearer " + accessToken;
+      },
     });
-    api = new DefaultApi(config);
+    api = new AuthApi(config);
   });
 
   it("should handle error response", async () => {
     try {
-      const registerRes = await api.registerRaw({
-        user: {
+      const registerRes = await api.postAuthRegister({
+        body: {
           fullName: "test",
           email: "test@test.com",
           username: "username",
@@ -24,7 +25,7 @@ describe("DefaultApi Test Suite", () => {
         },
       });
 
-      console.log(await registerRes.raw.json());
+      expect(registerRes.data).toBeDefined();
     } catch (error) {
       console.log(error);
     }

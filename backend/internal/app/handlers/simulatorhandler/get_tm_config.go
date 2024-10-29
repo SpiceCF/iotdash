@@ -9,7 +9,7 @@ import (
 )
 
 type GetThermometerConfigResponse struct {
-	Status string                   `json:"status"`
+	Status string                   `json:"status" example:"success"`
 	Data   domain.ThermometerConfig `json:"data"`
 }
 
