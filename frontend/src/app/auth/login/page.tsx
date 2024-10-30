@@ -1,11 +1,11 @@
 import React from 'react';
 
-import AuthButton from './auth-button';
+import { LoginForm } from '@/components/login-form';
 
 function LoginPage() {
   return (
-    <div>
-      <AuthButton />
+    <div className="flex h-screen w-full items-center justify-center px-4">
+      <LoginForm />
     </div>
   );
 }

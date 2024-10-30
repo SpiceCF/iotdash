@@ -1,10 +1,10 @@
 .PHONY: frontend-dev
 frontend-dev:
-	cd frontend && bun run dev
+	cd frontend && make dev
 
 .PHONY: backend-dev
 backend-dev:
-	cd backend && make backend-dev
+	cd backend && make dev
 
 .PHONY: genmock-port
 genmock-port:

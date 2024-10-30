@@ -1,10 +1,11 @@
 {
-  "name": "e2e",
+  "name": "@iotdash/api-client",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "tsc index.ts && bun index.js",
+    "build": "tsc index.ts",
     "test": "jest"
   },
   "devDependencies": {

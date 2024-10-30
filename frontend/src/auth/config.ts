@@ -1,3 +1,4 @@
+import { authAPI, userAPI } from '@/api-client';
 import type { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -5,18 +6,44 @@ export default {
   providers: [
     CredentialsProvider({
       credentials: {
-        email: { label: 'Email', type: 'email' },
+        username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        const user: User = {
-          id: '1',
-          name: 'John Doe',
-          email: credentials.email as string,
-          image: '',
-        };
+        try {
+          const userResponse = await authAPI.postAuthLogin({
+            body: {
+              username: credentials.username as string,
+              password: credentials.password as string,
+            },
+          });
 
-        return user;
+          if (!userResponse.data?.token) return null;
+
+          const userToken = userResponse.data.token;
+
+          const userProfile = userAPI
+            .withPreMiddleware(async (context) => {
+              context.init.headers = {
+                ...context.init.headers,
+                Authorization: `Bearer ${userToken}`,
+              };
+            })
+            .getUsersMe();
+
+          console.log(userProfile);
+
+          // const user: User = {
+          //   id: '1',
+          //   name: 'John Doe',
+          //   email: credentials.email as string,
+          //   image: '',
+          // };
+        } catch (err) {
+          console.error(err);
+        }
+
+        return null;
       },
     }),
   ],

@@ -1,10 +1,14 @@
 package authhandler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
+
+var ErrorNotFoundUser = errors.New("Invalid username or password")
 
 type LoginRequest struct {
 	Username string `json:"username" example:"johndoe"`
@@ -28,6 +32,10 @@ func (h *AuthHandler) login(c echo.Context) error {
 
 	token, err := h.aus.Login(reqBody.Username, reqBody.Password)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusBadRequest, ErrorNotFoundUser.Error())
+		}
+
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
