@@ -1,5 +1,9 @@
+'use client';
+
 import React from 'react';
+import { getProfileQueryOptions } from '@/services/auth';
 import { Separator } from '@radix-ui/react-separator';
+import { useQuery } from '@tanstack/react-query';
 
 import {
   SidebarInset,
@@ -12,14 +16,22 @@ import ConsoleBreadcrumb from './ConsoleBreadcrumb';
 import menuConfig from './menu-config';
 
 function ConsoleLayout({ children }: { children: React.ReactNode }) {
+  const { data } = useQuery({ ...getProfileQueryOptions() });
+
+  if (!data?.data) {
+    return <div>Loading...</div>;
+  }
+
+  const user = data.data;
+
   return (
     <SidebarProvider>
       <AppSidebar
         data={{
           user: {
-            name: 'shadcn',
-            email: 'm@example.com',
-            avatar: '/avatars/shadcn.jpg',
+            name: user.fullName ?? '',
+            email: user.email ?? '',
+            avatar: '',
           },
           nav: menuConfig,
         }}

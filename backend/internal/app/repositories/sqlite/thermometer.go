@@ -23,7 +23,7 @@ func (r *ThermometerRepository) Create(thermometer *domain.Thermometer) error {
 }
 
 func (r *ThermometerRepository) Update(thermometer *domain.Thermometer) error {
-	return r.db.Save(thermometer).Error
+	return r.db.Model(thermometer).Select("IsActive", "Name", "OwnerID", "Config").Updates(thermometer).Error
 }
 
 func (r *ThermometerRepository) GetByID(id uuid.UUID) (*domain.Thermometer, error) {

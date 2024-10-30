@@ -1,4 +1,11 @@
-import { AuthApi, Configuration, UserApi } from '@iotdash/api-client';
+import {
+  AuthApi,
+  Configuration,
+  SimulatorThermometerApi,
+  UserApi,
+} from '@iotdash/api-client';
+
+export * from '@iotdash/api-client';
 
 const config = new Configuration({
   basePath: 'http://localhost:8080/api/v1',
@@ -6,3 +13,4 @@ const config = new Configuration({
 
 export const authAPI = new AuthApi(config);
 export const userAPI = new UserApi(config);
+export const simulatorThermometerAPI = new SimulatorThermometerApi(config);

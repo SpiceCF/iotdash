@@ -2,6 +2,7 @@ package simulatorhandler
 
 import (
 	"fmt"
+	"iotdash/backend/internal/core/domain"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -18,6 +19,14 @@ func (h *SimulatorHandler) startEngine(c echo.Context) error {
 	thermometerID, err := uuid.Parse(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.ts.Update(&domain.Thermometer{
+		ID:       thermometerID,
+		IsActive: true,
+	})
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	err = h.tss.StartEngine(thermometerID)

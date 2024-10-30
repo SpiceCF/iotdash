@@ -1,6 +1,14 @@
+import { cookies } from 'next/headers';
 import { authAPI, userAPI } from '@/api-client';
 import type { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+
+declare module 'next-auth' {
+  interface Session {
+    user: User &
+      Awaited<ReturnType<typeof userAPI.getUsersMe>>['data'] & { jwt: string };
+  }
+}
 
 export default {
   providers: [
@@ -10,19 +18,18 @@ export default {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) return null;
         try {
+          const cookieStore = await cookies();
           const userResponse = await authAPI.postAuthLogin({
             body: {
               username: credentials.username as string,
               password: credentials.password as string,
             },
           });
-
           if (!userResponse.data?.token) return null;
-
           const userToken = userResponse.data.token;
-
-          const userProfile = userAPI
+          const userProfile = await userAPI
             .withPreMiddleware(async (context) => {
               context.init.headers = {
                 ...context.init.headers,
@@ -30,36 +37,45 @@ export default {
               };
             })
             .getUsersMe();
+          if (!userProfile.data) return null;
 
-          console.log(userProfile);
+          const user = {
+            name: userProfile.data.fullName,
+            image: '',
+            jwt: userToken,
+            ...userProfile.data,
+          } as User;
 
-          // const user: User = {
-          //   id: '1',
-          //   name: 'John Doe',
-          //   email: credentials.email as string,
-          //   image: '',
-          // };
+          cookieStore.set('user', JSON.stringify(user));
+          cookieStore.set('accessToken', userToken);
+
+          return user;
         } catch (err) {
           console.error(err);
         }
-
         return null;
       },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: 'jwt',
-  },
   pages: {
     signIn: '/auth/login',
   },
+  session: {
+    strategy: 'jwt',
+  },
   callbacks: {
     async session({ session }) {
-      return session;
+      const cookieStore = await cookies();
+      const user: User = JSON.parse(cookieStore.get('user')?.value || '{}');
+
+      return {
+        ...session,
+        user,
+      };
     },
     async jwt({ token }) {
-      return token;
+      return { ...token };
     },
   },
 } satisfies NextAuthConfig;

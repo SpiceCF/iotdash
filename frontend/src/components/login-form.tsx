@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn, signOut, useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -15,7 +14,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 import {
   Form,
@@ -31,21 +29,18 @@ const loginFormSchema = z.object({
   password: z.string(),
 });
 
-export function LoginForm() {
+export function LoginForm({
+  onSubmit,
+}: {
+  onSubmit: (values: z.infer<typeof loginFormSchema>) => void;
+}) {
   const loginForm = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      username: 'username',
-      password: 'password',
+      username: 'testuser',
+      password: 'testpassword',
     },
   });
-
-  function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    signIn('credentials', {
-      username: values.username,
-      password: values.password,
-    });
-  }
 
   return (
     <Card className="mx-auto max-w-sm">
@@ -80,7 +75,11 @@ export function LoginForm() {
                   <FormItem className="grid gap-2">
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="password" {...field} />
+                      <Input
+                        placeholder="password"
+                        type="password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

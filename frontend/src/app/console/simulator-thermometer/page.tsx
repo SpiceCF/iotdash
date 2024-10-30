@@ -2,7 +2,15 @@
 
 import * as React from 'react';
 import Link from 'next/link';
+import {
+  useCreateThermometerMutation,
+  useListThermometer,
+  useStartThermometerMutation,
+  useStopThermometerMutation,
+  type Thermometer,
+} from '@/services/thermometer';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -19,9 +27,11 @@ import { ChevronDown, MoreHorizontal } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -54,35 +64,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-const data: Device[] = [
-  {
-    id: '123e4567-e89b-12d3-a456-426614174000',
-    config: {
-      min: 10,
-      max: 20,
-    },
-    isActive: true,
-  },
-  {
-    id: '123e4567-e89b-12d3-a456-426614174001',
-    config: {
-      min: 10,
-      max: 20,
-    },
-    isActive: false,
-  },
-];
-
-type Device = {
-  id: string;
-  config: {
-    min: number;
-    max: number;
-  };
-  isActive: boolean;
-};
-
-const columns: ColumnDef<Device>[] = [
+const useColumns: (config: {
+  onActiveChange: (id: string, isActive: boolean) => void;
+}) => ColumnDef<Thermometer>[] = ({ onActiveChange }) => [
   {
     accessorKey: 'id',
     header: 'Device ID',
@@ -100,11 +84,11 @@ const columns: ColumnDef<Device>[] = [
     accessorKey: 'config',
     header: 'Config',
     cell: ({ row }) => {
-      const config = row.getValue('config') as Device['config'];
+      const config = row.getValue('config') as Thermometer['config'];
 
       return (
         <div className="capitalize">
-          Min: {config.min} , Max: {config.max}
+          Min: {config?.minTemperature} , Max: {config?.maxTemperature}
         </div>
       );
     },
@@ -118,7 +102,7 @@ const columns: ColumnDef<Device>[] = [
         <Switch
           checked={row.getValue('isActive')}
           onCheckedChange={(isChecked) => {
-            console.log(isChecked);
+            onActiveChange(row.getValue('id'), isChecked);
           }}
         />
       </div>
@@ -166,6 +150,10 @@ const columns: ColumnDef<Device>[] = [
 ];
 
 export default function Page() {
+  const queryClient = useQueryClient();
+  const { data: thermometerList } = useListThermometer();
+  const startThermometerMutation = useStartThermometerMutation();
+  const stopThermometerMutation = useStopThermometerMutation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -174,8 +162,31 @@ export default function Page() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const onActiveChange = (id: string, isActive: boolean) => {
+    if (isActive) {
+      startThermometerMutation.mutateAsync({ id }).then((res) => {
+        if (res.status !== 200) return;
+        toast({
+          title: 'Device started successfully',
+        });
+        queryClient.invalidateQueries({ queryKey: ['listThermometer'] });
+      });
+      return;
+    }
+
+    stopThermometerMutation.mutateAsync({ id }).then((res) => {
+      if (res.status !== 200) return;
+      toast({
+        title: 'Device stopped successfully',
+      });
+      queryClient.invalidateQueries({ queryKey: ['listThermometer'] });
+    });
+  };
+
+  const columns = useColumns({ onActiveChange });
+
   const table = useReactTable({
-    data,
+    data: thermometerList?.data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -281,7 +292,7 @@ export default function Page() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={useColumns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -320,21 +331,48 @@ export default function Page() {
 }
 
 const formSchemaAddDevice = z.object({
-  min: z.number(),
-  max: z.number(),
+  connection: z.string(),
+  minTemperature: z.number(),
+  maxTemperature: z.number(),
 });
 
 function AddDeviceDialog() {
+  const closeDialogRef = React.useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+  const createThermometerMutation = useCreateThermometerMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['listThermometer'] });
+      toast({
+        title: 'Device created successfully',
+      });
+      closeDialogRef.current?.click();
+    },
+    onError: (error) => {
+      toast({
+        title: `Failed to create device, ${error.message}`,
+      });
+    },
+  });
+
   const formAddDevice = useForm<z.infer<typeof formSchemaAddDevice>>({
     resolver: zodResolver(formSchemaAddDevice),
     defaultValues: {
-      min: 10,
-      max: 20,
+      connection: 'http://localhost:8080/api/v1/sensors/thermometer/logs',
+      minTemperature: 10,
+      maxTemperature: 20,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchemaAddDevice>) {
-    console.log(values);
+    createThermometerMutation.mutate({
+      body: {
+        config: {
+          connection: values.connection,
+          minTemperature: values.minTemperature,
+          maxTemperature: values.maxTemperature,
+        },
+      },
+    });
   }
 
   return (
@@ -360,7 +398,25 @@ function AddDeviceDialog() {
             <div className="flex flex-row gap-4">
               <FormField
                 control={formAddDevice.control}
-                name="min"
+                name="connection"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Connection</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Example. http://localhost:8080/api/v1/sensors/thermometer/logs"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-row gap-4">
+              <FormField
+                control={formAddDevice.control}
+                name="minTemperature"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Min Temperature*</FormLabel>
@@ -373,7 +429,7 @@ function AddDeviceDialog() {
               />
               <FormField
                 control={formAddDevice.control}
-                name="max"
+                name="maxTemperature"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Max Temperature*</FormLabel>
@@ -390,6 +446,7 @@ function AddDeviceDialog() {
             </div>
           </form>
         </Form>
+        <DialogClose ref={closeDialogRef} />
       </DialogContent>
     </Dialog>
   );

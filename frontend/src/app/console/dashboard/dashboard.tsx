@@ -55,8 +55,8 @@ const alertLogData = [
 
 export default function Dashboard() {
   return (
-    <div className="space-y-4 p-4">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="space-y-4 p-4 @container/dashboard">
+      <div className="grid grid-cols-1 place-items-center gap-10 @sm/dashboard:grid-cols-2 @7xl/dashboard:grid-cols-4">
         <ActiveDeviceChart />
         <ActiveDeviceChart />
         <ActiveDeviceChart />

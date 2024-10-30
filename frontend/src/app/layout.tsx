@@ -4,9 +4,7 @@ import localFont from 'next/font/local';
 
 import './globals.css';
 
-import { SessionProvider } from 'next-auth/react';
-
-import { TooltipProvider } from '@/components/ui/tooltip';
+import Providers from './providers';
 
 const kanitFont = Kanit({
   subsets: ['latin', 'thai'],
@@ -42,9 +40,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${kanitFont.variable} antialiased`}
       >
-        <SessionProvider>
-          <TooltipProvider>{children}</TooltipProvider>
-        </SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
