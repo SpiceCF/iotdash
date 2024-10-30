@@ -35,10 +35,10 @@ export interface UserhandlerGetMeResponse {
     data?: DomainUser;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof UserhandlerGetMeResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

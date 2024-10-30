@@ -35,10 +35,10 @@ export interface SimulatorhandlerListThermometersResponse {
     data?: Array<DomainThermometer>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SimulatorhandlerListThermometersResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

@@ -35,10 +35,10 @@ export interface UserhandlerGetMeSettingsResponse {
     data?: Array<DomainUserSetting>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof UserhandlerGetMeSettingsResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

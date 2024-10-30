@@ -5,27 +5,51 @@ import (
 	"iotdash/backend/internal/core/domain"
 	"iotdash/backend/internal/core/port"
 	"iotdash/backend/pkg/thermoengine"
+	"log"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-var _ port.ThermometerSimulatorService = &ThermometerSimulatorService{}
+var _ port.ThermometerSimulatorService = (*ThermometerSimulatorService)(nil)
 
 var engineInstances map[uuid.UUID]*thermoengine.ThermoEngine = make(map[uuid.UUID]*thermoengine.ThermoEngine)
 
-type ThermometerSimulatorService struct {
-	engines map[uuid.UUID]*thermoengine.ThermoEngine
+var _ thermoengine.EngineMonitor = (*SimulatorEngineMonitor)(nil)
+
+type SimulatorEngineMonitor struct {
+	ts port.ThermometerService
 }
 
-func NewThermometerSimulatorService() *ThermometerSimulatorService {
+func (s *SimulatorEngineMonitor) OnTemperatureChange(tm *domain.Thermometer) {
+	err := s.ts.AddThermometerHistory(&domain.ThermometerHistory{
+		ThermometerID: tm.ID,
+		Temperature:   tm.Temperature,
+		Timestamp:     time.Now(),
+	})
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+type ThermometerSimulatorService struct {
+	engines map[uuid.UUID]*thermoengine.ThermoEngine
+	em      *SimulatorEngineMonitor
+}
+
+func NewThermometerSimulatorService(ts port.ThermometerService) *ThermometerSimulatorService {
 	return &ThermometerSimulatorService{
 		engines: engineInstances,
+		em: &SimulatorEngineMonitor{
+			ts: ts,
+		},
 	}
 }
 
 func (s *ThermometerSimulatorService) LoadThermometers(thermometers []*domain.Thermometer) error {
 	for _, tm := range thermometers {
 		te := thermoengine.NewThermoEngine(tm)
+		te.SetMonitor(s.em)
 		s.engines[tm.ID] = te
 	}
 

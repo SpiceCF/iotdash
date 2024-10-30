@@ -13,7 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var _ port.AuthService = &AuthService{}
+var _ port.AuthService = (*AuthService)(nil)
 
 type AuthService struct {
 	us        port.UserService

@@ -12,6 +12,8 @@ type ThermometerRepository interface {
 	Update(tm *domain.Thermometer) error
 	GetByID(id uuid.UUID) (*domain.Thermometer, error)
 	ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error)
+	GetHistoryByThermometerID(id uuid.UUID) ([]*domain.ThermometerHistory, error)
+	AddThermometerHistory(history *domain.ThermometerHistory) error
 }
 
 type ThermometerService interface {
@@ -19,6 +21,8 @@ type ThermometerService interface {
 	Update(tm *domain.Thermometer) error
 	GetByID(id uuid.UUID) (*domain.Thermometer, error)
 	ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error)
+	GetHistoryByThermometerID(id uuid.UUID) ([]*domain.ThermometerHistory, error)
+	AddThermometerHistory(history *domain.ThermometerHistory) error
 }
 
 type ThermometerSimulatorService interface {

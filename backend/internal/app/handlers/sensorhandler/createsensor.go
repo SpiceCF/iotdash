@@ -15,7 +15,7 @@ type CreateSensorRequest struct {
 }
 
 type CreateSensorResponse struct {
-	Status string         `json:"status" example:"success"`
+	Status int            `json:"status" example:"200"`
 	Data   *domain.Sensor `json:"data"`
 }
 
@@ -46,7 +46,7 @@ func (h *SensorHandler) createSensor(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, CreateSensorResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   sensor,
 	})
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var _ port.SensorService = &SensorService{}
+var _ port.SensorService = (*SensorService)(nil)
 
 type SensorService struct {
 	sr port.SensorRepository

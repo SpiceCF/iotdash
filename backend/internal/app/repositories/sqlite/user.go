@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var _ port.UserRepository = &UserRepository{}
+var _ port.UserRepository = (*UserRepository)(nil)
 
 type UserRepository struct {
 	db *gorm.DB

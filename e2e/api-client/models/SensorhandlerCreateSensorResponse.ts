@@ -35,10 +35,10 @@ export interface SensorhandlerCreateSensorResponse {
     data?: DomainSensor;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SensorhandlerCreateSensorResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

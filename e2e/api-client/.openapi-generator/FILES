@@ -16,6 +16,7 @@ models/DomainSensorConfig.ts
 models/DomainSensorLog.ts
 models/DomainThermometer.ts
 models/DomainThermometerConfig.ts
+models/DomainThermometerHistory.ts
 models/DomainUser.ts
 models/DomainUserSetting.ts
 models/SensorhandlerCreateSensorRequest.ts
@@ -26,10 +27,10 @@ models/SensorhandlerListSensorLogsResponse.ts
 models/SensorhandlerListSensorsResponse.ts
 models/SimulatorhandlerCreateThermometerRequest.ts
 models/SimulatorhandlerCreateThermometerResponse.ts
-models/SimulatorhandlerGetThermometerConfigResponse.ts
+models/SimulatorhandlerEngineSwitchResponse.ts
+models/SimulatorhandlerGetTMHistoryResponse.ts
+models/SimulatorhandlerGetThermometerResponse.ts
 models/SimulatorhandlerListThermometersResponse.ts
-models/SimulatorhandlerStartEngineResponse.ts
-models/SimulatorhandlerStopEngineResponse.ts
 models/SimulatorhandlerUpdateThermometerConfigRequest.ts
 models/SimulatorhandlerUpdateThermometerConfigResponse.ts
 models/UserhandlerGetMeResponse.ts

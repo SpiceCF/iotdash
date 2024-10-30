@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var _ port.SensorRepository = &SensorRepository{}
+var _ port.SensorRepository = (*SensorRepository)(nil)
 
 type SensorRepository struct {
 	db *gorm.DB
@@ -36,7 +36,13 @@ func (sr *SensorRepository) CreateSensorLog(sensorLog *domain.SensorLog) error {
 	return sr.db.Create(sensorLog).Error
 }
 
+const logLimit = 50
+
 func (sr *SensorRepository) ListSensorLogs(deviceID uuid.UUID) ([]*domain.SensorLog, error) {
 	var sensorLogs []*domain.SensorLog
-	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).Find(&sensorLogs).Order("timestamp desc").Limit(10).Error
+	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).
+		Order("timestamp desc").
+		Find(&sensorLogs).
+		Limit(logLimit).
+		Error
 }

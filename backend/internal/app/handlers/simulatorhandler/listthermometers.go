@@ -9,7 +9,7 @@ import (
 )
 
 type ListThermometersResponse struct {
-	Status string                `json:"status"`
+	Status int                   `json:"status" example:"200"`
 	Data   []*domain.Thermometer `json:"data"`
 }
 
@@ -25,7 +25,7 @@ func (h *SimulatorHandler) listThermometers(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, ListThermometersResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   thermometers,
 	})
 }

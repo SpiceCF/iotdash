@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var _ port.ThermometerService = &ThermometerService{}
+var _ port.ThermometerService = (*ThermometerService)(nil)
 
 type ThermometerService struct {
 	tmr port.ThermometerRepository
@@ -41,4 +41,12 @@ func (s *ThermometerService) GetByID(id uuid.UUID) (*domain.Thermometer, error) 
 
 func (s *ThermometerService) ListByOwnerID(ownerID uuid.UUID) ([]*domain.Thermometer, error) {
 	return s.tmr.ListByOwnerID(ownerID)
+}
+
+func (s *ThermometerService) GetHistoryByThermometerID(id uuid.UUID) ([]*domain.ThermometerHistory, error) {
+	return s.tmr.GetHistoryByThermometerID(id)
+}
+
+func (s *ThermometerService) AddThermometerHistory(history *domain.ThermometerHistory) error {
+	return s.tmr.AddThermometerHistory(history)
 }

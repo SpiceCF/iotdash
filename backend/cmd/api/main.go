@@ -27,7 +27,7 @@ func main() {
 	thermometerRepository := sqlite.NewThermometerRepository(db)
 	thermometerService := service.NewThermometerService(thermometerRepository)
 
-	simulatorService := service.NewThermometerSimulatorService()
+	simulatorService := service.NewThermometerSimulatorService(thermometerService)
 
 	userRepository := sqlite.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)

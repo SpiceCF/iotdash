@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ handlers.EchoRouteHandler = &SensorHandler{}
+var _ handlers.EchoRouteHandler = (*SensorHandler)(nil)
 
 type SensorHandler struct {
 	log         *zap.Logger

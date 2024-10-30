@@ -94,13 +94,31 @@ describe("DefaultApi Test Suite", () => {
 
     expect(startTMRes.status).toBe(200);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const getTMResAfterStart = await tmAPI.getSimulatorThermometerId({
+      id: thermometerID,
+    });
+
+    expect(getTMResAfterStart.data?.isActive).toBe(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const stopTMRes = await tmAPI.postSimulatorThermometerIdStop({
       id: thermometerID,
     });
 
     expect(stopTMRes.status).toBe(200);
+
+    const getTMResAfterStop = await tmAPI.getSimulatorThermometerId({
+      id: thermometerID,
+    });
+
+    expect(getTMResAfterStop.data?.isActive).toBe(false);
+
+    const getTMHistoryRes = await tmAPI.getSimulatorThermometerIdHistory({
+      id: thermometerID,
+    });
+
+    expect(getTMHistoryRes.data?.length).toBeGreaterThan(0);
   });
 
   it("should have sensor logs", async () => {

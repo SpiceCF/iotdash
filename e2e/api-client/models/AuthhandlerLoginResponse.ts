@@ -35,10 +35,10 @@ export interface AuthhandlerLoginResponse {
     data?: AuthhandlerLoginErrorResponseData;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof AuthhandlerLoginResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

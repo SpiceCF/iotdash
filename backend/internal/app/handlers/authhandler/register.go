@@ -15,7 +15,7 @@ type RegisterRequest struct {
 }
 
 type RegisterResponse struct {
-	Status string                    `json:"status" example:"success"`
+	Status int                       `json:"status" example:"200"`
 	Data   RegisterErrorResponseData `json:"data"`
 }
 
@@ -35,7 +35,7 @@ func (h *AuthHandler) register(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, &RegisterResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   RegisterErrorResponseData{UserID: userID},
 	})
 }

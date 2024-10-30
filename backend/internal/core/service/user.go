@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var _ port.UserService = &UserService{}
+var _ port.UserService = (*UserService)(nil)
 
 type UserService struct {
 	ur port.UserRepository

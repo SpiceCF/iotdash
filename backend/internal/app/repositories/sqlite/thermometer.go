@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var _ port.ThermometerRepository = &ThermometerRepository{}
+var _ port.ThermometerRepository = (*ThermometerRepository)(nil)
 
 type ThermometerRepository struct {
 	db *gorm.DB
@@ -23,7 +23,7 @@ func (r *ThermometerRepository) Create(thermometer *domain.Thermometer) error {
 }
 
 func (r *ThermometerRepository) Update(thermometer *domain.Thermometer) error {
-	return r.db.Model(thermometer).Select("IsActive", "Name", "OwnerID", "Config").Updates(thermometer).Error
+	return r.db.Save(thermometer).Error
 }
 
 func (r *ThermometerRepository) GetByID(id uuid.UUID) (*domain.Thermometer, error) {
@@ -40,4 +40,22 @@ func (r *ThermometerRepository) ListByOwnerID(ownerID uuid.UUID) ([]*domain.Ther
 		return nil, err
 	}
 	return thermometers, nil
+}
+
+const historyLimit = 50
+
+func (r *ThermometerRepository) GetHistoryByThermometerID(id uuid.UUID) ([]*domain.ThermometerHistory, error) {
+	var history []*domain.ThermometerHistory
+	if err := r.db.Where(&domain.ThermometerHistory{ThermometerID: id}).
+		Order("timestamp desc").
+		Find(&history).
+		Limit(historyLimit).
+		Error; err != nil {
+		return nil, err
+	}
+	return history, nil
+}
+
+func (r *ThermometerRepository) AddThermometerHistory(history *domain.ThermometerHistory) error {
+	return r.db.Create(history).Error
 }

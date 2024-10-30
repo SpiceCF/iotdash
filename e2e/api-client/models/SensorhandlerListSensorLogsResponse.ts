@@ -35,10 +35,10 @@ export interface SensorhandlerListSensorLogsResponse {
     data?: Array<DomainSensorLog>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SensorhandlerListSensorLogsResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

@@ -35,10 +35,10 @@ export interface AuthhandlerRegisterResponse {
     data?: AuthhandlerRegisterErrorResponseData;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof AuthhandlerRegisterResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

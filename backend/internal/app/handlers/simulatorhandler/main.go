@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ handlers.EchoRouteHandler = &SimulatorHandler{}
+var _ handlers.EchoRouteHandler = (*SimulatorHandler)(nil)
 
 type SimulatorHandler struct {
 	log         *zap.Logger
@@ -33,11 +33,16 @@ func (h *SimulatorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg := e.Group("/simulator/thermometer", h.middlewares.VerifyTokenMiddleware())
 	rg.GET("", h.listThermometers)
 	rg.POST("", h.createThermometer)
-	rg.GET("/:id/config", h.getThermometerConfig)
+	rg.GET("/:id", h.getThermometer)
+	rg.GET("/:id/history", h.getTMHistory)
 	rg.PUT("/:id/config", h.updateThermometerConfig)
-	rg.POST("/:id/start", h.startEngine)
-	rg.POST("/:id/stop", h.stopEngine)
+	rg.POST("/:id/start", h.engineSwitch("start"))
+	rg.POST("/:id/stop", h.engineSwitch("stop"))
 
+	registerSwagger(api)
+}
+
+func registerSwagger(api *swag.API) {
 	ag := api.WithGroup("/simulator/thermometer")
 	ag.AddEndpoint(
 		endpoint.New(
@@ -66,16 +71,29 @@ func (h *SimulatorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 			),
 		),
 		endpoint.New(
-			http.MethodGet, "/{id}/config",
+			http.MethodGet, "/{id}",
 			endpoint.Tags("Simulator.Thermometer"),
-			endpoint.Summary("Get thermometer config"),
-			endpoint.OperationID("getConfig"),
-			endpoint.Description("Get thermometer config"),
+			endpoint.Summary("Get thermometer"),
+			endpoint.OperationID("get"),
+			endpoint.Description("Get thermometer"),
 			endpoint.Path("id", "string", "Thermometer ID", true),
 			endpoint.Response(
 				http.StatusOK,
-				"GetThermometerConfigResponse",
-				endpoint.SchemaResponseOption(new(GetThermometerConfigResponse)),
+				"GetThermometerResponse",
+				endpoint.SchemaResponseOption(new(GetThermometerResponse)),
+			),
+		),
+		endpoint.New(
+			http.MethodGet, "/{id}/history",
+			endpoint.Tags("Simulator.Thermometer"),
+			endpoint.Summary("Get thermometer history"),
+			endpoint.OperationID("getHistory"),
+			endpoint.Description("Get thermometer history"),
+			endpoint.Path("id", "string", "Thermometer ID", true),
+			endpoint.Response(
+				http.StatusOK,
+				"GetTMHistoryResponse",
+				endpoint.SchemaResponseOption(new(GetTMHistoryResponse)),
 			),
 		),
 		endpoint.New(
@@ -101,8 +119,8 @@ func (h *SimulatorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 			endpoint.Path("id", "string", "Thermometer ID", true),
 			endpoint.Response(
 				http.StatusOK,
-				"StartEngineResponse",
-				endpoint.SchemaResponseOption(new(StartEngineResponse)),
+				"EngineSwitchResponse",
+				endpoint.SchemaResponseOption(new(EngineSwitchResponse)),
 			),
 		),
 		endpoint.New(
@@ -114,8 +132,8 @@ func (h *SimulatorHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 			endpoint.Path("id", "string", "Thermometer ID", true),
 			endpoint.Response(
 				http.StatusOK,
-				"StopEngineResponse",
-				endpoint.SchemaResponseOption(new(StopEngineResponse)),
+				"EngineSwitchResponse",
+				endpoint.SchemaResponseOption(new(EngineSwitchResponse)),
 			),
 		),
 	)

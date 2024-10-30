@@ -35,10 +35,10 @@ export interface SimulatorhandlerCreateThermometerResponse {
     data?: DomainThermometer;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SimulatorhandlerCreateThermometerResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

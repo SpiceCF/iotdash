@@ -35,10 +35,10 @@ export interface SensorhandlerListSensorsResponse {
     data?: Array<DomainSensor>;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof SensorhandlerListSensorsResponse
      */
-    status?: string;
+    status?: number;
 }
 
 /**

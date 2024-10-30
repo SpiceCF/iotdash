@@ -9,7 +9,7 @@ import (
 )
 
 type GetMeResponse struct {
-	Status string       `json:"status" example:"success"`
+	Status int          `json:"status" example:"200"`
 	Data   *domain.User `json:"data"`
 }
 
@@ -25,7 +25,7 @@ func (h *UserHandler) getMe(c echo.Context) error {
 	user.Password = ""
 
 	return c.JSON(http.StatusOK, GetMeResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   user,
 	})
 }

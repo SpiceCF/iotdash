@@ -9,7 +9,7 @@ import (
 )
 
 type ListSensorLogsResponse struct {
-	Status string              `json:"status" example:"success"`
+	Status int                 `json:"status" example:"200"`
 	Data   []*domain.SensorLog `json:"data"`
 }
 
@@ -39,7 +39,7 @@ func (h *SensorHandler) listSensorLogs(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, ListSensorLogsResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   sensorLogs,
 	})
 }

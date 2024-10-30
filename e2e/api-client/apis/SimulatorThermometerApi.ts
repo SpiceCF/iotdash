@@ -17,10 +17,10 @@ import * as runtime from '../runtime';
 import type {
   SimulatorhandlerCreateThermometerRequest,
   SimulatorhandlerCreateThermometerResponse,
-  SimulatorhandlerGetThermometerConfigResponse,
+  SimulatorhandlerEngineSwitchResponse,
+  SimulatorhandlerGetTMHistoryResponse,
+  SimulatorhandlerGetThermometerResponse,
   SimulatorhandlerListThermometersResponse,
-  SimulatorhandlerStartEngineResponse,
-  SimulatorhandlerStopEngineResponse,
   SimulatorhandlerUpdateThermometerConfigRequest,
   SimulatorhandlerUpdateThermometerConfigResponse,
 } from '../models/index';
@@ -29,21 +29,25 @@ import {
     SimulatorhandlerCreateThermometerRequestToJSON,
     SimulatorhandlerCreateThermometerResponseFromJSON,
     SimulatorhandlerCreateThermometerResponseToJSON,
-    SimulatorhandlerGetThermometerConfigResponseFromJSON,
-    SimulatorhandlerGetThermometerConfigResponseToJSON,
+    SimulatorhandlerEngineSwitchResponseFromJSON,
+    SimulatorhandlerEngineSwitchResponseToJSON,
+    SimulatorhandlerGetTMHistoryResponseFromJSON,
+    SimulatorhandlerGetTMHistoryResponseToJSON,
+    SimulatorhandlerGetThermometerResponseFromJSON,
+    SimulatorhandlerGetThermometerResponseToJSON,
     SimulatorhandlerListThermometersResponseFromJSON,
     SimulatorhandlerListThermometersResponseToJSON,
-    SimulatorhandlerStartEngineResponseFromJSON,
-    SimulatorhandlerStartEngineResponseToJSON,
-    SimulatorhandlerStopEngineResponseFromJSON,
-    SimulatorhandlerStopEngineResponseToJSON,
     SimulatorhandlerUpdateThermometerConfigRequestFromJSON,
     SimulatorhandlerUpdateThermometerConfigRequestToJSON,
     SimulatorhandlerUpdateThermometerConfigResponseFromJSON,
     SimulatorhandlerUpdateThermometerConfigResponseToJSON,
 } from '../models/index';
 
-export interface GetSimulatorThermometerIdConfigRequest {
+export interface GetSimulatorThermometerIdRequest {
+    id: string;
+}
+
+export interface GetSimulatorThermometerIdHistoryRequest {
     id: string;
 }
 
@@ -102,14 +106,14 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get thermometer config
-     * Get thermometer config
+     * Get thermometer
+     * Get thermometer
      */
-    async getSimulatorThermometerIdConfigRaw(requestParameters: GetSimulatorThermometerIdConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerGetThermometerConfigResponse>> {
+    async getSimulatorThermometerIdRaw(requestParameters: GetSimulatorThermometerIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerGetThermometerResponse>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
-                'Required parameter "id" was null or undefined when calling getSimulatorThermometerIdConfig().'
+                'Required parameter "id" was null or undefined when calling getSimulatorThermometerId().'
             );
         }
 
@@ -122,21 +126,60 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/simulator/thermometer/{id}/config`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: `/simulator/thermometer/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerGetThermometerConfigResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerGetThermometerResponseFromJSON(jsonValue));
     }
 
     /**
-     * Get thermometer config
-     * Get thermometer config
+     * Get thermometer
+     * Get thermometer
      */
-    async getSimulatorThermometerIdConfig(requestParameters: GetSimulatorThermometerIdConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerGetThermometerConfigResponse> {
-        const response = await this.getSimulatorThermometerIdConfigRaw(requestParameters, initOverrides);
+    async getSimulatorThermometerId(requestParameters: GetSimulatorThermometerIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerGetThermometerResponse> {
+        const response = await this.getSimulatorThermometerIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get thermometer history
+     * Get thermometer history
+     */
+    async getSimulatorThermometerIdHistoryRaw(requestParameters: GetSimulatorThermometerIdHistoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerGetTMHistoryResponse>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling getSimulatorThermometerIdHistory().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/simulator/thermometer/{id}/history`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerGetTMHistoryResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get thermometer history
+     * Get thermometer history
+     */
+    async getSimulatorThermometerIdHistory(requestParameters: GetSimulatorThermometerIdHistoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerGetTMHistoryResponse> {
+        const response = await this.getSimulatorThermometerIdHistoryRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -186,7 +229,7 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
      * Start thermometer engine
      * Start thermometer engine
      */
-    async postSimulatorThermometerIdStartRaw(requestParameters: PostSimulatorThermometerIdStartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerStartEngineResponse>> {
+    async postSimulatorThermometerIdStartRaw(requestParameters: PostSimulatorThermometerIdStartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerEngineSwitchResponse>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -209,14 +252,14 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerStartEngineResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerEngineSwitchResponseFromJSON(jsonValue));
     }
 
     /**
      * Start thermometer engine
      * Start thermometer engine
      */
-    async postSimulatorThermometerIdStart(requestParameters: PostSimulatorThermometerIdStartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerStartEngineResponse> {
+    async postSimulatorThermometerIdStart(requestParameters: PostSimulatorThermometerIdStartRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerEngineSwitchResponse> {
         const response = await this.postSimulatorThermometerIdStartRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -225,7 +268,7 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
      * Stop thermometer engine
      * Stop thermometer engine
      */
-    async postSimulatorThermometerIdStopRaw(requestParameters: PostSimulatorThermometerIdStopRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerStopEngineResponse>> {
+    async postSimulatorThermometerIdStopRaw(requestParameters: PostSimulatorThermometerIdStopRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SimulatorhandlerEngineSwitchResponse>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -248,14 +291,14 @@ export class SimulatorThermometerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerStopEngineResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => SimulatorhandlerEngineSwitchResponseFromJSON(jsonValue));
     }
 
     /**
      * Stop thermometer engine
      * Stop thermometer engine
      */
-    async postSimulatorThermometerIdStop(requestParameters: PostSimulatorThermometerIdStopRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerStopEngineResponse> {
+    async postSimulatorThermometerIdStop(requestParameters: PostSimulatorThermometerIdStopRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SimulatorhandlerEngineSwitchResponse> {
         const response = await this.postSimulatorThermometerIdStopRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var ErrorNotFoundUser = errors.New("Invalid username or password")
+var ErrNotFoundUser = errors.New("Invalid username or password")
 
 type LoginRequest struct {
 	Username string `json:"username" example:"johndoe"`
@@ -16,7 +16,7 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Status string                 `json:"status" example:"success"`
+	Status int                    `json:"status" example:"200"`
 	Data   LoginErrorResponseData `json:"data"`
 }
 
@@ -33,14 +33,14 @@ func (h *AuthHandler) login(c echo.Context) error {
 	token, err := h.aus.Login(reqBody.Username, reqBody.Password)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.JSON(http.StatusBadRequest, ErrorNotFoundUser.Error())
+			return c.JSON(http.StatusBadRequest, ErrNotFoundUser.Error())
 		}
 
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, &LoginResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   LoginErrorResponseData{Token: token},
 	})
 }

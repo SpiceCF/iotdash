@@ -15,16 +15,31 @@ const temperatureAdjustmentFactor = 10
 const temperatureOffset = 5
 const adjustmentMultiplier = 100
 
+type EngineMonitor interface {
+	OnTemperatureChange(tm *domain.Thermometer)
+}
+
+var _ EngineMonitor = (*defaultEngineMonitor)(nil)
+
+type defaultEngineMonitor struct{}
+
+func (d *defaultEngineMonitor) OnTemperatureChange(_ *domain.Thermometer) {}
+
 type ThermoEngine struct {
 	tm     *domain.Thermometer
 	ticker *time.Ticker
+	m      EngineMonitor
 	rc     *resty.Client
 }
 
 func NewThermoEngine(tm *domain.Thermometer) *ThermoEngine {
 	client := resty.New()
 
-	return &ThermoEngine{tm: tm, rc: client}
+	return &ThermoEngine{tm: tm, rc: client, m: &defaultEngineMonitor{}}
+}
+
+func (te *ThermoEngine) SetMonitor(m EngineMonitor) {
+	te.m = m
 }
 
 func (te *ThermoEngine) StartSyncTemperature() {
@@ -45,6 +60,7 @@ func (te *ThermoEngine) StartSyncTemperature() {
 			changedTemperature := te.tm.Temperature + randomFloat - float64(temperatureOffset)
 			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
 			te.tm.UpdatedAt = time.Now()
+			te.m.OnTemperatureChange(te.tm)
 			err = te.PushLog()
 			if err != nil {
 				te.tm.Connected = false

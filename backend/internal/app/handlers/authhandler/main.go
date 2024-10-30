@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var _ handlers.EchoRouteHandler = &AuthHandler{}
+var _ handlers.EchoRouteHandler = (*AuthHandler)(nil)
 
 type AuthHandler struct {
 	aus port.AuthService

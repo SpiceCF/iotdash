@@ -13,7 +13,7 @@ type CreateThermometerRequest struct {
 }
 
 type CreateThermometerResponse struct {
-	Status string              `json:"status"`
+	Status int                 `json:"status" example:"200"`
 	Data   *domain.Thermometer `json:"data"`
 }
 
@@ -39,7 +39,7 @@ func (h *SimulatorHandler) createThermometer(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, CreateThermometerResponse{
-		Status: "success",
+		Status: http.StatusOK,
 		Data:   thermometer,
 	})
 }
