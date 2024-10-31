@@ -6,6 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
+    "add:dev:api-clint":"yarn add file:../e2e",
     "lint": "next lint"
   },
   "dependencies": {
