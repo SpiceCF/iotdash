@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fluid-tailwind/tailwind-merge": "^0.0.3",
     "@hookform/resolvers": "^3.9.0",
     "@iotdash/api-client": "file:../e2e",
     "@number-flow/react": "^0.3.0",
@@ -78,6 +79,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "15.0.1",
+    "fluid-tailwind": "^1.0.3",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",

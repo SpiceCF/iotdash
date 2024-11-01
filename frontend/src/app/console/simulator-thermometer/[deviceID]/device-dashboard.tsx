@@ -5,6 +5,7 @@ import NumberFlow from '@number-flow/react';
 import {
   AlertCircle,
   HistoryIcon,
+  InfoIcon,
   ThermometerIcon,
   WifiIcon,
 } from 'lucide-react';
@@ -45,39 +46,42 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
   const lastTemp = data[0]?.temperature;
 
   return (
-    <div className="h-full space-y-6 bg-background px-6 py-2">
+    <div className="h-fit space-y-6 bg-background px-6 py-2">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <Card className="col-span-1 md:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
-              <ThermometerIcon className="mr-2 inline h-4 w-4" /> Temperature
-              Overview
+              <ThermometerIcon className="mr-2 inline h-4 w-4" />
+              Temperature Overview
+              <span className="gap-2 px-2">
+                <Badge
+                  variant="secondary"
+                  className="gap-1 text-xs text-primary"
+                >
+                  <WifiIcon className="h-3 w-3" />
+                  Normal
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="gap-1 text-xs text-primary"
+                >
+                  <InfoIcon className="h-3 w-3" />
+                  Normal
+                </Badge>
+              </span>
             </CardTitle>
+            <CardDescription>
+              Current Temp. :&nbsp;
+              {lastTemp !== undefined ? (
+                <>
+                  <NumberFlow value={lastTemp} /> °C
+                </>
+              ) : (
+                '-'
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <WifiIcon className="h-4 w-4 text-green-500" />
-                <div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-500/10 text-xs text-green-500"
-                  >
-                    Online
-                  </Badge>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Status: Normal
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <CardDescription>Current Temp.</CardDescription>
-                <CardTitle>
-                  {lastTemp !== undefined && <NumberFlow value={lastTemp} />}
-                  °C
-                </CardTitle>
-              </div>
-            </div>
             <ChartContainer
               className="max-h-[250px] w-full"
               config={{
@@ -163,7 +167,7 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
         </Card>
       </div>
 
-      <Card>
+      <Card className="max-h-[500px]">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-medium">
             <HistoryIcon className="mr-2 inline h-4 w-4" /> Temperature History
@@ -178,12 +182,20 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-muted-foreground">{`2024-10-24 ${row.time}:00.00000+07:00`}</TableCell>
-                  <TableCell className="font-medium">{`${row.temperature} °C`}</TableCell>
+              {data.length === 0 ? (
+                <TableRow className="h-40">
+                  <TableCell colSpan={2} className="text-center">
+                    No data
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                data.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-muted-foreground">{`2024-10-24 ${row.time}:00.00000+07:00`}</TableCell>
+                    <TableCell className="font-medium">{`${row.temperature} °C`}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>

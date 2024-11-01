@@ -1,17 +1,23 @@
 import tailwindContainerQueryPlugin from '@tailwindcss/container-queries';
 import tailwindFormsPlugin from '@tailwindcss/forms';
 import tailwindTypographyPlugin from '@tailwindcss/typography';
+import fluid, { extract, fontSize, screens } from 'fluid-tailwind';
 import type { Config } from 'tailwindcss';
 import tailwindAnimatePlugin from 'tailwindcss-animate';
 
 const config: Config = {
   darkMode: ['class'],
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: {
+    files: [
+      './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+      './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+      './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    ],
+    extract,
+  },
   theme: {
+    screens,
+    fontSize,
     extend: {
       colors: {
         background: 'hsl(var(--background))',
@@ -95,6 +101,7 @@ const config: Config = {
     },
   },
   plugins: [
+    fluid,
     tailwindAnimatePlugin,
     tailwindContainerQueryPlugin,
     tailwindTypographyPlugin(),
