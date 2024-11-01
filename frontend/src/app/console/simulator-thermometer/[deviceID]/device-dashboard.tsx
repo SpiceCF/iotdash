@@ -12,19 +12,12 @@ import {
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -70,16 +63,6 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                 </Badge>
               </span>
             </CardTitle>
-            <CardDescription>
-              Current Temp. :&nbsp;
-              {lastTemp !== undefined ? (
-                <>
-                  <NumberFlow value={lastTemp} /> °C
-                </>
-              ) : (
-                '-'
-              )}
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer
@@ -135,34 +118,17 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
         <Card className="col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium">
-              <AlertCircle className="mr-2 inline h-4 w-4" /> Alert Log
+              <AlertCircle className="mr-2 inline h-4 w-4" /> Current Temp.
             </CardTitle>
           </CardHeader>
-          <CardContent className="h-[320px]">
-            <ScrollArea className="h-full">
-              <div className="space-y-2 pr-4">
-                {[
-                  { temp: 30, time: '18:00:00', type: 'Low' },
-                  { temp: 51, time: '15:00:00', type: 'High' },
-                  { temp: 28, time: '12:00:00', type: 'Low' },
-                  { temp: 53, time: '09:00:00', type: 'High' },
-                ].map((alert, index) => (
-                  <Card
-                    key={index}
-                    className={`bg-${alert.type === 'Low' ? 'blue' : 'red'}-500/10`}
-                  >
-                    <CardHeader className="p-3">
-                      <CardTitle className="text-sm">
-                        Critical {alert.type}: {alert.temp} °C
-                      </CardTitle>
-                      <CardDescription className="text-xs">
-                        2024-10-24 {alert.time}
-                      </CardDescription>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            </ScrollArea>
+          <CardContent className="h-[320px] content-center text-center ~text-5xl/6xl">
+            {lastTemp !== undefined ? (
+              <>
+                <NumberFlow value={lastTemp} /> °C
+              </>
+            ) : (
+              '-'
+            )}
           </CardContent>
         </Card>
       </div>

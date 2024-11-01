@@ -1,6 +1,6 @@
 'use client';
 
-import { authAPI, PostAuthRegisterRequest, userAPI } from '@/api-client';
+import { authAPI, PostAuthRegisterRequest, userAPI } from '@/services/api-client';
 import { IRequestOptions, TUseMutationOptions } from '@/services/interface';
 import { queryOptions, useMutation } from '@tanstack/react-query';
 

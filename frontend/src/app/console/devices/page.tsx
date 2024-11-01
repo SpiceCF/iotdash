@@ -1,8 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import {
+  useCreateSensorMutation,
+  useListSensor,
+  type Sensor,
+} from '@/services/sensor';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -19,9 +25,11 @@ import { ChevronDown, MoreHorizontal } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { toast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -53,60 +61,19 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-const data: Device[] = [
-  {
-    id: '123e4567-e89b-12d3-a456-426614174000',
-    name: 'Bedroom',
-    status: 'normal',
-    connection: 'online',
-  },
-  {
-    id: '123e4567-e89b-12d3-a456-426614172508',
-    name: 'Kitchen',
-    status: 'critical',
-    connection: 'offline',
-  },
-];
-
-type Device = {
-  id: string;
-  name: string;
-  status: 'normal' | 'critical';
-  connection: 'online' | 'offline';
-};
-
-const columns: ColumnDef<Device>[] = [
+const useColumns: () => ColumnDef<Sensor>[] = () => [
   {
     accessorKey: 'name',
-    header: 'Device Name',
-    cell: ({ row }) => (
-      <Link
-        href={`/console/devices/${row.getValue('id')}`}
-        className="capitalize"
-      >
-        {row.getValue('name')}
-      </Link>
-    ),
+    header: 'Name',
+    enableHiding: false,
+    cell: ({ row }) => <div className="capitalize">{row.getValue('name')}</div>,
   },
   {
     accessorKey: 'id',
     header: 'Device ID',
+    enableHiding: false,
     cell: ({ row }) => (
       <div className="line-clamp-1 capitalize">{row.getValue('id')}</div>
-    ),
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('status')}</div>
-    ),
-  },
-  {
-    accessorKey: 'connection',
-    header: 'Connection',
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('connection')}</div>
     ),
   },
   {
@@ -151,6 +118,8 @@ const columns: ColumnDef<Device>[] = [
 ];
 
 export default function Page() {
+  const router = useRouter();
+  const { data: sensorList } = useListSensor();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -159,8 +128,10 @@ export default function Page() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const columns = useColumns();
+
   const table = useReactTable({
-    data,
+    data: sensorList?.data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -188,10 +159,10 @@ export default function Page() {
       <div className="flex items-center justify-between gap-2 py-4">
         <div className="flex gap-2">
           <Input
-            placeholder="Filter device names..."
-            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+            placeholder="Filter device ID..."
+            value={(table.getColumn('id')?.getFilterValue() as string) ?? ''}
             onChange={(event) =>
-              table.getColumn('name')?.setFilterValue(event.target.value)
+              table.getColumn('id')?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -252,6 +223,10 @@ export default function Page() {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="cursor-pointer"
+                  onClick={() => {
+                    router.push(`/console/devices/${row.original.id}`);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -305,21 +280,44 @@ export default function Page() {
 }
 
 const formSchemaAddDevice = z.object({
-  name: z.string().min(1, { message: 'Device name is required' }),
-  id: z.string().min(1, { message: 'Device ID is required' }),
+  deviceID: z.string(),
+  name: z.string(),
 });
 
 function AddDeviceDialog() {
+  const closeDialogRef = React.useRef<HTMLButtonElement>(null);
+  const queryClient = useQueryClient();
+  const createSensorMutation = useCreateSensorMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['listSensor'] });
+      toast({
+        title: 'Device created successfully',
+      });
+      closeDialogRef.current?.click();
+    },
+    onError: (error) => {
+      toast({
+        title: `Failed to create device, ${error.message}`,
+      });
+    },
+  });
+
   const formAddDevice = useForm<z.infer<typeof formSchemaAddDevice>>({
     resolver: zodResolver(formSchemaAddDevice),
     defaultValues: {
+      deviceID: '',
       name: '',
-      id: '',
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchemaAddDevice>) {
-    console.log(values);
+    createSensorMutation.mutate({
+      body: {
+        deviceId: values.deviceID as unknown as object,
+        name: values.name,
+        type: 'thermometer',
+      },
+    });
   }
 
   return (
@@ -345,23 +343,10 @@ function AddDeviceDialog() {
             <div className="flex flex-row gap-4">
               <FormField
                 control={formAddDevice.control}
-                name="name"
+                name="deviceID"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Device Name*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Example. Bedroom-01" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={formAddDevice.control}
-                name="id"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Device ID*</FormLabel>
+                    <FormLabel>Connection</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Example. 123e4567-e89b-12d3-a456-426614174000"
@@ -373,11 +358,27 @@ function AddDeviceDialog() {
                 )}
               />
             </div>
+            <div className="flex flex-row gap-4">
+              <FormField
+                control={formAddDevice.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Name*</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Example. Bedroom" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <div className="flex justify-end">
               <Button type="submit">Add Device</Button>
             </div>
           </form>
         </Form>
+        <DialogClose ref={closeDialogRef} />
       </DialogContent>
     </Dialog>
   );

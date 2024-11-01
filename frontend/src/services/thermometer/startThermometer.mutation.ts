@@ -1,7 +1,7 @@
 import {
   PostSimulatorThermometerIdStartRequest,
   simulatorThermometerAPI,
-} from '@/api-client';
+} from '@/services/api-client';
 import { IRequestOptions, TUseMutationOptions } from '@/services/interface';
 import { useMutation } from '@tanstack/react-query';
 

@@ -1,9 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { authApi } from '@/api-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 

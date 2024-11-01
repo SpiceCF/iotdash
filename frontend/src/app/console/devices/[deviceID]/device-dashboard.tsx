@@ -1,21 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useListSensorLogs } from '@/services/sensor';
+import NumberFlow from '@number-flow/react';
 import {
   AlertCircle,
   HistoryIcon,
+  InfoIcon,
   ThermometerIcon,
   WifiIcon,
 } from 'lucide-react';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -24,6 +24,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Table,
@@ -33,64 +42,57 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const data = [
-  { time: '13:00', temperature: 45 },
-  { time: '14:00', temperature: 47 },
-  { time: '15:00', temperature: 51 },
-  { time: '16:00', temperature: 49 },
-  { time: '17:00', temperature: 38 },
-  { time: '18:00', temperature: 30 },
-];
+export function DeviceDashboard({ deviceID }: { deviceID: string }) {
+  const { data: sensorLogs } = useListSensorLogs(deviceID);
 
-export function DeviceDashboard() {
-  const [selectedPeriod, setSelectedPeriod] = useState('1h');
+  const data =
+    sensorLogs?.data?.map((log) => ({
+      time: log.timestamp,
+      temperature: log.value,
+    })) || [];
+
+  const lastTemp = data[0]?.temperature;
 
   return (
-    <div className="min-h-screen space-y-6 bg-background px-6 py-2">
+    <div className="h-fit space-y-6 bg-background px-6 py-2">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <Card className="col-span-1 md:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
-              <ThermometerIcon className="mr-2 inline h-4 w-4" /> Temperature
-              Overview
+              <ThermometerIcon className="mr-2 inline h-4 w-4" />
+              Temperature Overview
+              <span className="gap-2 px-2">
+                <Badge
+                  variant="secondary"
+                  className="gap-1 text-xs text-primary"
+                >
+                  <WifiIcon className="h-3 w-3" />
+                  Online
+                </Badge>
+                <Badge
+                  variant="secondary"
+                  className="gap-1 text-xs text-primary"
+                >
+                  <InfoIcon className="h-3 w-3" />
+                  Normal
+                </Badge>
+              </span>
             </CardTitle>
-            <Tabs
-              defaultValue={selectedPeriod}
-              onValueChange={setSelectedPeriod}
-            >
-              <TabsList className="grid h-8 w-full grid-cols-5">
-                {['1h', '12h', '24h', '7d', '1M'].map((period) => (
-                  <TabsTrigger key={period} value={period} className="text-xs">
-                    {period}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
+            <CardDescription>
+              Current Temp. :&nbsp;
+              {lastTemp !== undefined ? (
+                <>
+                  <NumberFlow value={lastTemp} /> °C
+                </>
+              ) : (
+                '-'
+              )}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <WifiIcon className="h-4 w-4 text-green-500" />
-                <div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-500/10 text-xs text-green-500"
-                  >
-                    Online
-                  </Badge>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Status: Normal
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <CardDescription>Current Temp.</CardDescription>
-                <CardTitle>30°C</CardTitle>
-              </div>
-            </div>
             <ChartContainer
+              className="max-h-[250px] w-full"
               config={{
                 temperature: {
                   label: 'Temperature',
@@ -104,10 +106,29 @@ export function DeviceDashboard() {
                   className="stroke-muted/30"
                 />
                 <XAxis
+                  type="category"
                   dataKey="time"
                   className="text-xs text-muted-foreground"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return date.toLocaleTimeString('en-US', {
+                      timeZone: 'Asia/Bangkok',
+                      timeStyle: 'medium',
+                      hour12: false,
+                    });
+                  }}
+                  reversed
                 />
-                <YAxis className="text-xs text-muted-foreground" />
+                <YAxis
+                  className="text-xs text-muted-foreground"
+                  domain={[0, 100]}
+                  allowDataOverflow
+                  interval="preserveStartEnd"
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Line
                   type="monotone"
@@ -126,8 +147,8 @@ export function DeviceDashboard() {
               <AlertCircle className="mr-2 inline h-4 w-4" /> Alert Log
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ScrollArea>
+          <CardContent className="h-[320px]">
+            <ScrollArea className="h-full">
               <div className="space-y-2 pr-4">
                 {[
                   { temp: 30, time: '18:00:00', type: 'Low' },
@@ -161,7 +182,7 @@ export function DeviceDashboard() {
             <HistoryIcon className="mr-2 inline h-4 w-4" /> Temperature History
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="max-h-[500px]">
           <Table>
             <TableHeader>
               <TableRow>
@@ -170,96 +191,49 @@ export function DeviceDashboard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-muted-foreground">{`2024-10-24 ${row.time}:00.00000+07:00`}</TableCell>
-                  <TableCell className="font-medium">{`${row.temperature} °C`}</TableCell>
+              {data.length === 0 ? (
+                <TableRow className="h-40">
+                  <TableCell colSpan={2} className="text-center">
+                    No data
+                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                data.splice(0, 10).map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-muted-foreground">{`2024-10-24 ${row.time}:00.00000+07:00`}</TableCell>
+                    <TableCell className="font-medium">{`${row.temperature} °C`}</TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
+          <div className="flex items-end justify-end p-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious href="#" />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">1</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#" isActive>
+                    2
+                  </PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationLink href="#">3</PaginationLink>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext href="#" />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </CardContent>
-        <CardFooter className="flex justify-end space-x-2">
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to first page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m11 17-5-5 5-5" />
-              <path d="m18 17-5-5 5-5" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to previous page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="sm">
-            1
-          </Button>
-          <Button variant="outline" size="sm">
-            2
-          </Button>
-          <Button variant="outline" size="sm">
-            3
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to next page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to last page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m13 17 5-5-5-5" />
-              <path d="m6 17 5-5-5-5" />
-            </svg>
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

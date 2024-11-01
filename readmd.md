@@ -26,3 +26,17 @@ STACK : GOLANG
 ## REQUIREMENT
 
 [Please see](./docs/requirement.md)
+
+```
+- cmd
+- internal
+  - model
+    - sensor.go **
+  - service
+    - sensor.go **
+  - repository
+    - sensor.go **
+  - handler
+- pkg
+  - sensor.go **
+```

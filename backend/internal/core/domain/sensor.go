@@ -59,10 +59,13 @@ type SensorLog struct {
 	SensorType SensorType `json:"sensor_type" gorm:"not null" example:"thermometer"`
 	Key        string     `json:"key" gorm:"not null" example:"temperature"`
 	Value      float64    `json:"value" gorm:"not null" example:"25.5"`
-	Timestamp  time.Time  `json:"timestamp" gorm:"not null" example:"2024-10-29T22:40:03.410461+07:00"`
+	// Refactor name to CreatedAt
+	Timestamp time.Time `json:"timestamp" gorm:"not null" example:"2024-10-29T22:40:03.410461+07:00"`
 }
 
 func (s *SensorLog) BeforeCreate(_ *gorm.DB) error {
 	s.ID = uuid.New()
 	return nil
 }
+
+type SensorFactor (SensorType)

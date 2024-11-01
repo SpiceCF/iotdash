@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { authAPI, userAPI } from '@/api-client';
+import { authAPI, userAPI } from '@/services/api-client';
 import type { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 

@@ -1,4 +1,4 @@
-import { simulatorThermometerAPI } from '@/api-client';
+import { simulatorThermometerAPI } from '@/services/api-client';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { getAccessToken } from '..';
