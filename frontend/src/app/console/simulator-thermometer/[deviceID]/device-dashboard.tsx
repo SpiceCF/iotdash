@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useListThermometerHistory } from '@/services/thermometer/listThermometer.query';
+import NumberFlow from '@number-flow/react';
 import {
   AlertCircle,
   HistoryIcon,
@@ -34,10 +34,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export function DeviceDashboard({ deviceID }: { deviceID: string }) {
-  const [selectedPeriod, setSelectedPeriod] = useState('1h');
   const { data: thermometerHistories } = useListThermometerHistory(deviceID);
 
   const data =
@@ -46,8 +44,10 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
       temperature: history.temperature,
     })) || [];
 
+  const lastTemp = data[0]?.temperature;
+
   return (
-    <div className="min-h-screen space-y-6 bg-background px-6 py-2">
+    <div className="h-full space-y-6 bg-background px-6 py-2">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <Card className="col-span-1 md:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -55,18 +55,6 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               <ThermometerIcon className="mr-2 inline h-4 w-4" /> Temperature
               Overview
             </CardTitle>
-            <Tabs
-              defaultValue={selectedPeriod}
-              onValueChange={setSelectedPeriod}
-            >
-              <TabsList className="grid h-8 w-full grid-cols-5">
-                {['1h', '12h', '24h', '7d', '1M'].map((period) => (
-                  <TabsTrigger key={period} value={period} className="text-xs">
-                    {period}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
           </CardHeader>
           <CardContent>
             <div className="mb-4 flex items-center justify-between">
@@ -86,10 +74,14 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               </div>
               <div className="text-right">
                 <CardDescription>Current Temp.</CardDescription>
-                <CardTitle>30°C</CardTitle>
+                <CardTitle>
+                  {lastTemp !== undefined && <NumberFlow value={lastTemp} />}
+                  °C
+                </CardTitle>
               </div>
             </div>
             <ChartContainer
+              className="max-h-[250px] w-full"
               config={{
                 temperature: {
                   label: 'Temperature',
@@ -106,6 +98,18 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                   type="category"
                   dataKey="time"
                   className="text-xs text-muted-foreground"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return date.toLocaleTimeString('en-US', {
+                      timeZone: 'Asia/Bangkok',
+                      timeStyle: 'medium',
+                      hour12: false,
+                    });
+                  }}
                   reversed
                 />
                 <YAxis
@@ -132,8 +136,8 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               <AlertCircle className="mr-2 inline h-4 w-4" /> Alert Log
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ScrollArea>
+          <CardContent className="h-[320px]">
+            <ScrollArea className="h-full">
               <div className="space-y-2 pr-4">
                 {[
                   { temp: 30, time: '18:00:00', type: 'Low' },
@@ -185,87 +189,6 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter className="flex justify-end space-x-2">
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to first page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m11 17-5-5 5-5" />
-              <path d="m18 17-5-5 5-5" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to previous page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="sm">
-            1
-          </Button>
-          <Button variant="outline" size="sm">
-            2
-          </Button>
-          <Button variant="outline" size="sm">
-            3
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to next page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </Button>
-          <Button variant="outline" size="icon">
-            <span className="sr-only">Go to last page</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4"
-            >
-              <path d="m13 17 5-5-5-5" />
-              <path d="m6 17 5-5-5-5" />
-            </svg>
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );

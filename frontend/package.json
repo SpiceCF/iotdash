@@ -6,12 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "add:dev:api-clint":"yarn add file:../e2e",
+    "add:dev:api-clint": "yarn add file:../e2e",
     "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@iotdash/api-client": "file:../e2e",
+    "@number-flow/react": "^0.3.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
