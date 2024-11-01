@@ -11,12 +11,10 @@ import {
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
