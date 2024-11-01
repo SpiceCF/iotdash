@@ -11,8 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-var _ port.ThermometerSimulatorService = (*ThermometerSimulatorService)(nil)
-
 var engineInstances map[uuid.UUID]*thermoengine.ThermoEngine = make(map[uuid.UUID]*thermoengine.ThermoEngine)
 
 var _ thermoengine.EngineMonitor = (*SimulatorEngineMonitor)(nil)
@@ -31,6 +29,8 @@ func (s *SimulatorEngineMonitor) OnTemperatureChange(tm *domain.Thermometer) {
 		log.Println(err)
 	}
 }
+
+var _ port.ThermometerSimulatorService = (*ThermometerSimulatorService)(nil)
 
 type ThermometerSimulatorService struct {
 	engines map[uuid.UUID]*thermoengine.ThermoEngine

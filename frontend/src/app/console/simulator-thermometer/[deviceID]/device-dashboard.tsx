@@ -59,7 +59,7 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                   className="gap-1 text-xs text-primary"
                 >
                   <WifiIcon className="h-3 w-3" />
-                  Normal
+                  Online
                 </Badge>
                 <Badge
                   variant="secondary"
