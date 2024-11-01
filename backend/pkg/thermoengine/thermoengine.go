@@ -2,10 +2,12 @@ package thermoengine
 
 import (
 	"crypto/rand"
+	"fmt"
 	"iotdash/backend/internal/core/domain"
 	"log"
 	"math"
 	"math/big"
+	"strconv"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -58,7 +60,12 @@ func (te *ThermoEngine) StartSyncTemperature() {
 			}
 			randomFloat := float64(randomInt.Int64()) / float64(adjustmentMultiplier)
 			changedTemperature := te.tm.Temperature + randomFloat - float64(temperatureOffset)
-			te.tm.Temperature = math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
+			randomTemp := math.Max(math.Min(changedTemperature, te.tm.Config.MaxTemperature), te.tm.Config.MinTemperature)
+			te.tm.Temperature, err = strconv.ParseFloat(fmt.Sprintf("%.2f", randomTemp), 64)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 			te.tm.UpdatedAt = time.Now()
 			te.m.OnTemperatureChange(te.tm)
 			err = te.PushLog()

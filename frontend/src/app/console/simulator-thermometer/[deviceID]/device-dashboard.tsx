@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useListThermometerHistory } from '@/services/thermometer/listThermometer.query';
 import {
   AlertCircle,
   HistoryIcon,
@@ -35,17 +36,15 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const data = [
-  { time: '13:00', temperature: 45 },
-  { time: '14:00', temperature: 47 },
-  { time: '15:00', temperature: 51 },
-  { time: '16:00', temperature: 49 },
-  { time: '17:00', temperature: 38 },
-  { time: '18:00', temperature: 30 },
-];
-
-export function DeviceDashboard() {
+export function DeviceDashboard({ deviceID }: { deviceID: string }) {
   const [selectedPeriod, setSelectedPeriod] = useState('1h');
+  const { data: thermometerHistories } = useListThermometerHistory(deviceID);
+
+  const data =
+    thermometerHistories?.data?.map((history) => ({
+      time: history.timestamp,
+      temperature: history.temperature,
+    })) || [];
 
   return (
     <div className="min-h-screen space-y-6 bg-background px-6 py-2">
@@ -104,10 +103,17 @@ export function DeviceDashboard() {
                   className="stroke-muted/30"
                 />
                 <XAxis
+                  type="category"
                   dataKey="time"
                   className="text-xs text-muted-foreground"
+                  reversed
                 />
-                <YAxis className="text-xs text-muted-foreground" />
+                <YAxis
+                  className="text-xs text-muted-foreground"
+                  domain={[0, 100]}
+                  allowDataOverflow
+                  interval="preserveStartEnd"
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Line
                   type="monotone"

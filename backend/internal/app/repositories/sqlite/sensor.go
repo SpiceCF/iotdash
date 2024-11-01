@@ -42,7 +42,7 @@ func (sr *SensorRepository) ListSensorLogs(deviceID uuid.UUID) ([]*domain.Sensor
 	var sensorLogs []*domain.SensorLog
 	return sensorLogs, sr.db.Where(&domain.SensorLog{DeviceID: deviceID}).
 		Order("timestamp desc").
-		Find(&sensorLogs).
 		Limit(logLimit).
+		Find(&sensorLogs).
 		Error
 }

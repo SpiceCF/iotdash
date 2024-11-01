@@ -10,7 +10,6 @@ export default async function Page({
   params: Promise<{ deviceID: string }>;
 }) {
   const { deviceID } = await params;
-  console.log('🚀 ~ deviceID:', deviceID);
 
-  return <DeviceDashboard />;
+  return <DeviceDashboard deviceID={deviceID} />;
 }

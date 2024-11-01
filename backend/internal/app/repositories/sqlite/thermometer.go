@@ -42,14 +42,14 @@ func (r *ThermometerRepository) ListByOwnerID(ownerID uuid.UUID) ([]*domain.Ther
 	return thermometers, nil
 }
 
-const historyLimit = 50
+const historyLimit = 10
 
 func (r *ThermometerRepository) GetHistoryByThermometerID(id uuid.UUID) ([]*domain.ThermometerHistory, error) {
 	var history []*domain.ThermometerHistory
 	if err := r.db.Where(&domain.ThermometerHistory{ThermometerID: id}).
 		Order("timestamp desc").
-		Find(&history).
 		Limit(historyLimit).
+		Find(&history).
 		Error; err != nil {
 		return nil, err
 	}

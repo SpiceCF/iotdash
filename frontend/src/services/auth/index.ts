@@ -40,10 +40,6 @@ async function getProfileRequest(
 export function getProfileQueryOptions() {
   const jwt = getAccessToken();
 
-  if (!jwt) {
-    throw new Error('Please login first');
-  }
-
   return queryOptions({
     queryKey: ['getProfileRequest', jwt],
     queryFn: ({ signal }) => getProfileRequest(jwt, { signal }),

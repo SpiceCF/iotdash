@@ -13,10 +13,6 @@ async function stopThermometerRequest(
 ) {
   const jwt = getAccessToken();
 
-  if (!jwt) {
-    throw new Error('Please login first');
-  }
-
   return simulatorThermometerAPI.postSimulatorThermometerIdStop(request, {
     headers: {
       Authorization: `Bearer ${jwt}`,

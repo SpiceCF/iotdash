@@ -14,7 +14,16 @@ export function ServiceProvider({
   );
 }
 
-export function getAccessToken(): string | undefined {
+export function getAccessToken(): string {
   const cookies = new Cookies();
-  return cookies.get('accessToken') as string;
+
+  const jwt = cookies.get('accessToken') as string;
+
+  if (!jwt) {
+    if (typeof window !== 'undefined') {
+      throw new Error('Please login first');
+    }
+  }
+
+  return jwt;
 }

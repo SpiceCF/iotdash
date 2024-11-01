@@ -292,7 +292,7 @@ export default function Page() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={useColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -359,7 +359,7 @@ function AddDeviceDialog() {
     defaultValues: {
       connection: 'http://localhost:8080/api/v1/sensors/thermometer/logs',
       minTemperature: 10,
-      maxTemperature: 20,
+      maxTemperature: 100,
     },
   });
 
@@ -421,7 +421,11 @@ function AddDeviceDialog() {
                   <FormItem className="w-full">
                     <FormLabel>Min Temperature*</FormLabel>
                     <FormControl>
-                      <Input placeholder="Example. 30" {...field} />
+                      <Input
+                        placeholder="Example. 30"
+                        type="number"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -434,7 +438,11 @@ function AddDeviceDialog() {
                   <FormItem className="w-full">
                     <FormLabel>Max Temperature*</FormLabel>
                     <FormControl>
-                      <Input placeholder="Example. 50" {...field} />
+                      <Input
+                        placeholder="Example. 50"
+                        type="number"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
