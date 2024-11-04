@@ -182,7 +182,7 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
             <HistoryIcon className="mr-2 inline h-4 w-4" /> Temperature History
           </CardTitle>
         </CardHeader>
-        <CardContent className="max-h-[500px]">
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
