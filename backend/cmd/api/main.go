@@ -2,12 +2,12 @@ package main
 
 import (
 	"errors"
-	"iotdash/backend/internal/app/handlers"
-	"iotdash/backend/internal/app/handlers/authhandler"
-	"iotdash/backend/internal/app/handlers/sensorhandler"
-	"iotdash/backend/internal/app/handlers/simulatorhandler"
-	"iotdash/backend/internal/app/handlers/userhandler"
-	"iotdash/backend/internal/app/repositories/sqlite"
+	"iotdash/backend/internal/adapter/handlers/restful"
+	"iotdash/backend/internal/adapter/handlers/restful/authhandler"
+	"iotdash/backend/internal/adapter/handlers/restful/sensorhandler"
+	"iotdash/backend/internal/adapter/handlers/restful/simulatorhandler"
+	"iotdash/backend/internal/adapter/handlers/restful/userhandler"
+	"iotdash/backend/internal/adapter/repositories/sqlite"
 	"iotdash/backend/internal/core/service"
 	"iotdash/backend/pkg/zaplog"
 	"net/http"
@@ -37,7 +37,7 @@ func main() {
 	sensorRepository := sqlite.NewSensorRepository(db)
 	sensorService := service.NewSensorService(sensorRepository)
 
-	e := handlers.NewEcho(log, []handlers.EchoRouteHandler{
+	e := restful.NewEcho(log, []restful.EchoRouteHandler{
 		authhandler.New(authService),
 		simulatorhandler.New(simulatorService, thermometerService, authService),
 		sensorhandler.New(sensorService, authService),

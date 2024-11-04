@@ -2,7 +2,7 @@ package sensorhandler
 
 import (
 	"fmt"
-	"iotdash/backend/internal/app/handlers"
+	"iotdash/backend/internal/adapter/handlers"
 	"iotdash/backend/internal/core/domain"
 	"iotdash/backend/internal/core/port"
 	"net/http"

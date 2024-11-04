@@ -1,7 +1,7 @@
 package userhandler
 
 import (
-	"iotdash/backend/internal/app/handlers"
+	"iotdash/backend/internal/adapter/handlers"
 	"iotdash/backend/internal/core/port"
 	"net/http"
 

@@ -1,4 +1,4 @@
-package handlers
+package restful
 
 import (
 	"iotdash/backend/internal/core/port"
