@@ -48,6 +48,7 @@ STACK : GOLANG
 <!-- TEST FOR T-4-2 -->
 <!-- TEST FOR T-4-3 -->
 <!-- TEST FOR T-1 -->
+<!-- TEST FOR T-3 -->
 
 [REF](https://github1s.com/labasubagia/realworld-backend)
 
