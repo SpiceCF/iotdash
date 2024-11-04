@@ -1,0 +1,76 @@
+info:
+  name: Conduit
+  schema: https://schema.getpostman.com/json/collection/v2.1.0/collection.json
+
+item:
+  - name: Auth
+    event:
+      - listen: prerequest
+        script:
+          type: text/javascript
+          exec: |-
+            pm.environment.set("API_URL", "http://localhost:8080/api/v1");
+    item:
+      - name: Register
+        request:
+          method: POST
+          header:
+            - key: Content-Type
+              value: application/json
+            - key: X-Requested-With
+              value: XMLHttpRequest
+          body:
+            mode: raw
+            raw: |-
+              {
+                "fullName": "John Doe",
+                "email": "john.doe@example.com",
+                "username": "johndoe",
+                "password": "password"
+              }
+          url: "{{API_URL}}/auth/register"
+        response: []
+      - name: Login
+        event:
+          - listen: test
+            script:
+              type: text/javascript
+              exec: |-
+                pm.environment.set("TOKEN", pm.response.json().data.token);
+        request:
+          method: POST
+          header:
+            - key: Content-Type
+              value: application/json
+            - key: X-Requested-With
+              value: XMLHttpRequest
+          body:
+            mode: raw
+            raw: |-
+              {
+                "username": "johndoe",
+                "password": "password"
+              }
+          url: "{{API_URL}}/auth/login"
+        response: []
+      - name: GetMe
+        event:
+          - listen: prerequest
+            script:
+              type: text/javascript
+              exec: |-
+                console.log(pm.environment.get("TOKEN"));
+          - listen: test
+            script:
+              type: text/javascript
+              exec: |-
+                console.log(pm.response.json());
+        request:
+          method: GET
+          header:
+            - key: Authorization
+              value: Bearer {{TOKEN}}
+            - key: X-Requested-With
+              value: XMLHttpRequest
+          url: "{{API_URL}}/users/me"
+        response: []
