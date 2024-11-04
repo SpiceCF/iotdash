@@ -37,7 +37,7 @@ func main() {
 	sensorRepository := sqlite.NewSensorRepository(db)
 	sensorService := service.NewSensorService(sensorRepository)
 
-	e := restful.NewEcho(log, []restful.EchoRouteHandler{
+	e := restful.NewServer(log, []restful.RouteHandler{
 		authhandler.New(authService),
 		simulatorhandler.New(simulatorService, thermometerService, authService),
 		sensorhandler.New(sensorService, authService),

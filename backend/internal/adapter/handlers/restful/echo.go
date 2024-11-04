@@ -11,12 +11,12 @@ import (
 	"go.uber.org/zap"
 )
 
-type EchoRouteHandler interface {
+type RouteHandler interface {
 	SetupLogger(log *zap.Logger)
 	RegisterRoutes(e *echo.Group, api *swag.API)
 }
 
-func NewEcho(log *zap.Logger, handlers []EchoRouteHandler) *echo.Echo {
+func NewServer(log *zap.Logger, handlers []RouteHandler) *echo.Echo {
 	echoLoggerMiddleware := zaplog.NewEchoLoggerMiddleware(log)
 
 	e := echo.New()
