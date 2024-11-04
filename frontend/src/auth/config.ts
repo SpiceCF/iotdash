@@ -75,6 +75,20 @@ export default {
       };
     },
     async jwt({ token }) {
+      // May be use other condition for check this in the future
+      const cookieStore = await cookies();
+      const userToken = cookieStore.get('accessToken')?.value;
+
+      const userProfile = await userAPI
+        .withPreMiddleware(async (context) => {
+          context.init.headers = {
+            ...context.init.headers,
+            Authorization: `Bearer ${userToken}`,
+          };
+        })
+        .getUsersMe();
+      if (!userProfile.data) return null;
+
       return { ...token };
     },
   },

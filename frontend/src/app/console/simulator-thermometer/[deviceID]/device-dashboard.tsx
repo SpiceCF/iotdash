@@ -40,8 +40,24 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
 
   return (
     <div className="h-fit space-y-6 bg-background px-6 py-2">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        <Card className="col-span-1 md:col-span-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <Card className="col-span-1">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium">
+              <AlertCircle className="mr-2 inline h-4 w-4" /> Current Temp.
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-[320px] content-center text-center ~text-4xl/3xl">
+            {lastTemp !== undefined ? (
+              <>
+                <NumberFlow value={lastTemp} /> °C
+              </>
+            ) : (
+              '-'
+            )}
+          </CardContent>
+        </Card>
+        <Card className="col-span-1 lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">
               <ThermometerIcon className="mr-2 inline h-4 w-4" />
@@ -115,25 +131,9 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
             </ChartContainer>
           </CardContent>
         </Card>
-        <Card className="col-span-2">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium">
-              <AlertCircle className="mr-2 inline h-4 w-4" /> Current Temp.
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="h-[320px] content-center text-center ~text-5xl/6xl">
-            {lastTemp !== undefined ? (
-              <>
-                <NumberFlow value={lastTemp} /> °C
-              </>
-            ) : (
-              '-'
-            )}
-          </CardContent>
-        </Card>
       </div>
 
-      <Card className="max-h-[500px]">
+      <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-medium">
             <HistoryIcon className="mr-2 inline h-4 w-4" /> Temperature History

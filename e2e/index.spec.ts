@@ -32,8 +32,8 @@ describe("DefaultApi Test Suite", () => {
         body: {
           fullName: "test",
           email: "test@test.com",
-          username: "username",
-          password: "password",
+          username: "testuser",
+          password: "testpassword",
         },
       });
 
@@ -46,8 +46,8 @@ describe("DefaultApi Test Suite", () => {
   it("should have token after login", async () => {
     const loginRes = await authAPI.postAuthLogin({
       body: {
-        username: "username",
-        password: "password",
+        username: "testuser",
+        password: "testpassword",
       },
     });
 

@@ -67,5 +67,3 @@ func (s *SensorLog) BeforeCreate(_ *gorm.DB) error {
 	s.ID = uuid.New()
 	return nil
 }
-
-type SensorFactor (SensorType)

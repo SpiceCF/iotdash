@@ -27,7 +27,7 @@ STACK : GOLANG
 
 [Please see](./docs/requirement.md)
 
-```
+```text
 - cmd
 - internal
   - model
@@ -35,6 +35,7 @@ STACK : GOLANG
   - service
     - sensor.go **
   - repository
+    - port.go 
     - sensor.go **
   - handler
 - pkg
