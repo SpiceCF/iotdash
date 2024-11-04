@@ -44,12 +44,36 @@ STACK : GOLANG
   - sensor.go **
 ```
 
-<!-- TEST FOR T-4 -->
-<!-- TEST FOR T-4-2 -->
-<!-- TEST FOR T-4-3 -->
-<!-- TEST FOR T-1 -->
-<!-- TEST FOR T-3 -->
-
 [REF](https://github1s.com/labasubagia/realworld-backend)
 
-<!-- TEST FOR T-2 -->
+## GIT WORKFLOW
+
+```text
+// Check to main branch and pull latest
+git checkout main && git pull
+
+// Checkout to target branch (ex. feat/t-1)
+git checkout feat/t-1
+
+// Rebase to main branch
+git rebase main
+
+// Resolve conflict if any and continue rebase
+git rebase --continue
+
+// When rebase is done, force push to remote for update line history
+// !! BE CAREFUL WITH FORCE PUSH, IT WILL OVERWRITE THE HISTORY !!
+git push -f
+
+// Squash commit (ex. 3 commit before HEAD)
+git rebase -i HEAD~3
+
+// Edit commit message (s for squash , p for pick)
+// Example
+// pick 1234567890 abc
+// squash 1234567890 def
+// squash 1234567890 ghi
+// save and exit then
+// edit commit message
+
+```
