@@ -44,4 +44,6 @@ STACK : GOLANG
   - sensor.go **
 ```
 
+<!-- TEST FOR T-1 -->
+
 [REF](https://github1s.com/labasubagia/realworld-backend)
