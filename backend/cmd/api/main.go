@@ -2,13 +2,10 @@ package main
 
 import (
 	"errors"
-	"iotdash/backend/internal/adapter/handlers/restful"
-	"iotdash/backend/internal/adapter/handlers/restful/authhandler"
-	"iotdash/backend/internal/adapter/handlers/restful/sensorhandler"
-	"iotdash/backend/internal/adapter/handlers/restful/simulatorhandler"
-	"iotdash/backend/internal/adapter/handlers/restful/userhandler"
-	"iotdash/backend/internal/adapter/repositories/sqlite"
-	"iotdash/backend/internal/core/service"
+	"iotdash/backend/internal/handlers/restful"
+	"iotdash/backend/internal/handlers/restful/routes"
+	"iotdash/backend/internal/repositories/sqlite"
+	"iotdash/backend/internal/service"
 	"iotdash/backend/pkg/zaplog"
 	"net/http"
 )
@@ -19,7 +16,6 @@ func main() {
 		panic(err)
 	}
 
-	// db, err := sqlite.NewDB(":memory:")
 	db, err := sqlite.NewDB("./.cache/db.sqlite")
 	if err != nil {
 		panic(err)
@@ -37,11 +33,19 @@ func main() {
 	sensorRepository := sqlite.NewSensorRepository(db)
 	sensorService := service.NewSensorService(sensorRepository)
 
+	routes := routes.NewRoutes(&routes.RouteDependencies{
+		AuthService:        authService,
+		SimulatorService:   simulatorService,
+		ThermometerService: thermometerService,
+		SensorService:      sensorService,
+		UserService:        userService,
+	})
+
 	e := restful.NewServer(log, []restful.RouteHandler{
-		authhandler.New(authService),
-		simulatorhandler.New(simulatorService, thermometerService, authService),
-		sensorhandler.New(sensorService, authService),
-		userhandler.New(userService, authService),
+		routes.Auth,
+		routes.Simulator,
+		routes.Sensor,
+		routes.User,
 	})
 
 	log.Info("starting server on port 8080")

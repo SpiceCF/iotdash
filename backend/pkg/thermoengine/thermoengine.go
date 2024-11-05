@@ -3,7 +3,7 @@ package thermoengine
 import (
 	"crypto/rand"
 	"fmt"
-	"iotdash/backend/internal/core/domain"
+	"iotdash/backend/internal/entity"
 	"log"
 	"math"
 	"math/big"
@@ -18,23 +18,23 @@ const temperatureOffset = 5
 const adjustmentMultiplier = 100
 
 type EngineMonitor interface {
-	OnTemperatureChange(tm *domain.Thermometer)
+	OnTemperatureChange(tm *entity.Thermometer)
 }
 
 var _ EngineMonitor = (*defaultEngineMonitor)(nil)
 
 type defaultEngineMonitor struct{}
 
-func (d *defaultEngineMonitor) OnTemperatureChange(_ *domain.Thermometer) {}
+func (d *defaultEngineMonitor) OnTemperatureChange(_ *entity.Thermometer) {}
 
 type ThermoEngine struct {
-	tm     *domain.Thermometer
+	tm     *entity.Thermometer
 	ticker *time.Ticker
 	m      EngineMonitor
 	rc     *resty.Client
 }
 
-func NewThermoEngine(tm *domain.Thermometer) *ThermoEngine {
+func NewThermoEngine(tm *entity.Thermometer) *ThermoEngine {
 	client := resty.New()
 
 	return &ThermoEngine{tm: tm, rc: client, m: &defaultEngineMonitor{}}
@@ -85,14 +85,14 @@ func (te *ThermoEngine) StopSyncTemperature() {
 	te.ticker.Stop()
 }
 
-func (te *ThermoEngine) GetThermometer() *domain.Thermometer {
+func (te *ThermoEngine) GetThermometer() *entity.Thermometer {
 	return te.tm
 }
 
 func (te *ThermoEngine) PushLog() error {
-	sLog := &domain.SensorLog{
+	sLog := &entity.SensorLog{
 		DeviceID:   te.tm.ID,
-		SensorType: domain.SensorTypeThermometer,
+		SensorType: entity.SensorTypeThermometer,
 		Key:        "temperature",
 		Value:      te.tm.Temperature,
 		Timestamp:  te.tm.UpdatedAt,
