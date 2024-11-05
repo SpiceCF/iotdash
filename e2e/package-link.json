@@ -1,0 +1,15 @@
+{
+  "name": "@iotdash/api-client",
+  "description": "API client for IoTdash",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "./index.cjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "default": "./index.cjs"
+    },
+    "./package.json": "./package.json"
+  }
+}

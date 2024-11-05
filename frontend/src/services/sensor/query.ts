@@ -1,5 +1,13 @@
-import { sensorAPI } from '@/services/api-client';
-import { queryOptions, useQuery } from '@tanstack/react-query';
+import {
+  GetSensorsIdLogsMetricRequest,
+  sensorAPI,
+} from '@/services/api-client';
+import {
+  DefaultError,
+  queryOptions,
+  useQuery,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 
 import { getAccessToken } from '..';
 import { IRequestOptions } from '../interface';
@@ -17,19 +25,25 @@ async function listSensor(jwt: string, requestOptions?: IRequestOptions) {
   });
 }
 
-export function listSensorQueryOptions() {
+export function listSensorQueryOptions(
+  options?: Omit<
+    UseQueryOptions<Awaited<ReturnType<typeof listSensor>>, DefaultError>,
+    'queryKey' | 'queryFn'
+  >
+) {
   const jwt = getAccessToken();
 
   return queryOptions({
     queryKey: ['listSensor', jwt],
     queryFn: ({ signal }) => listSensor(jwt, { signal }),
+    ...options,
   });
 }
 
-export function useListSensor() {
-  return useQuery({
-    ...listSensorQueryOptions(),
-  });
+export function useListSensor(
+  options?: Parameters<typeof listSensorQueryOptions>[0]
+) {
+  return useQuery(listSensorQueryOptions(options));
 }
 
 async function listSensorLogs(
@@ -48,18 +62,60 @@ async function listSensorLogs(
   );
 }
 
-export function listSensorLogsQueryOptions(id: string) {
+export function listSensorLogsQueryOptions(
+  id: string,
+  options?: Omit<
+    UseQueryOptions<Awaited<ReturnType<typeof listSensorLogs>>, DefaultError>,
+    'queryKey' | 'queryFn'
+  >
+) {
   const jwt = getAccessToken();
 
   return queryOptions({
     queryKey: ['getSensorLogs', jwt, id],
     queryFn: ({ signal }) => listSensorLogs(jwt, id, { signal }),
+    ...options,
   });
 }
 
-export function useListSensorLogs(id: string) {
-  return useQuery({
-    ...listSensorLogsQueryOptions(id),
-    refetchInterval: 3000,
+export function useListSensorLogs(
+  ...options: Parameters<typeof listSensorLogsQueryOptions>
+) {
+  return useQuery(listSensorLogsQueryOptions(...options));
+}
+
+async function listSensorMetricLogs(
+  jwt: string,
+  reqParams: GetSensorsIdLogsMetricRequest,
+  requestOptions?: IRequestOptions
+) {
+  return sensorAPI.getSensorsIdLogsMetric(reqParams, {
+    headers: { Authorization: `Bearer ${jwt}` },
+    signal: requestOptions?.signal,
   });
+}
+
+export function listSensorMetricLogsQueryOptions(
+  reqParams: GetSensorsIdLogsMetricRequest,
+  options?: Omit<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof listSensorMetricLogs>>,
+      DefaultError
+    >,
+    'queryKey' | 'queryFn'
+  >
+) {
+  const jwt = getAccessToken();
+
+  return queryOptions({
+    queryKey: ['getSensorMetricLogs', jwt, reqParams],
+    queryFn: ({ signal }) => listSensorMetricLogs(jwt, reqParams, { signal }),
+    ...options,
+  });
+}
+
+export function useListSensorMetricLogs(
+  ...options: Parameters<typeof listSensorMetricLogsQueryOptions>
+) {
+  return useQuery(listSensorMetricLogsQueryOptions(...options));
 }

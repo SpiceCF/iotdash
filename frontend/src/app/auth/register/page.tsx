@@ -28,14 +28,16 @@ function RegisterPage() {
   function onSubmit(
     values: Parameters<React.ComponentProps<typeof RegisterForm>['onSubmit']>[0]
   ) {
-    registerMutation.mutate({
-      body: {
-        fullName: values.fullName,
-        email: values.email,
-        username: values.username,
-        password: values.password,
+    registerMutation.mutate([
+      {
+        body: {
+          fullName: values.fullName,
+          email: values.email,
+          username: values.username,
+          password: values.password,
+        },
       },
-    });
+    ]);
   }
 
   const isRegisterSuccess = registerMutation.isSuccess;

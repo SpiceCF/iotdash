@@ -6,13 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "add:dev:api-clint": "yarn add file:../e2e",
+    "link:api-client": "yarn add file:../e2e/dist",
     "lint": "next lint"
   },
   "dependencies": {
     "@fluid-tailwind/tailwind-merge": "^0.0.3",
     "@hookform/resolvers": "^3.9.0",
-    "@iotdash/api-client": "file:../e2e",
+    "@iotdash/api-client": "file:../e2e/dist",
     "@number-flow/react": "^0.3.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -49,6 +49,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
+    "dist": "link:../e2e/dist",
     "embla-carousel-react": "^8.3.0",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.453.0",

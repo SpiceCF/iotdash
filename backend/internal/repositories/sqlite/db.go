@@ -19,7 +19,7 @@ func NewDB(dsn string) (*gorm.DB, error) {
 
 	// db = db.Debug()
 	if err = db.Migrator().DropTable(
-		&entity.User{},
+		// &entity.User{},
 		&entity.Thermometer{},
 		&entity.ThermometerHistory{},
 		&entity.Sensor{},

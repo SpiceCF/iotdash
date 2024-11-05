@@ -179,7 +179,7 @@ export default function Page() {
 
   const onActiveChange = (id: string, isActive: boolean) => {
     if (isActive) {
-      startThermometerMutation.mutateAsync({ id }).then((res) => {
+      startThermometerMutation.mutateAsync([{ id }]).then((res) => {
         if (res.status !== 200) return;
         toast({
           title: 'Device started successfully',
@@ -189,7 +189,7 @@ export default function Page() {
       return;
     }
 
-    stopThermometerMutation.mutateAsync({ id }).then((res) => {
+    stopThermometerMutation.mutateAsync([{ id }]).then((res) => {
       if (res.status !== 200) return;
       toast({
         title: 'Device stopped successfully',
@@ -379,15 +379,17 @@ function AddDeviceDialog() {
   });
 
   function onSubmit(values: z.infer<typeof formSchemaAddDevice>) {
-    createThermometerMutation.mutate({
-      body: {
-        config: {
-          connection: values.connection,
-          minTemperature: values.minTemperature,
-          maxTemperature: values.maxTemperature,
+    createThermometerMutation.mutate([
+      {
+        body: {
+          config: {
+            connection: values.connection,
+            minTemperature: values.minTemperature,
+            maxTemperature: values.maxTemperature,
+          },
         },
       },
-    });
+    ]);
   }
 
   return (

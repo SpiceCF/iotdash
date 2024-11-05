@@ -2,14 +2,13 @@ import {
   PostSimulatorThermometerRequest,
   simulatorThermometerAPI,
 } from '@/services/api-client';
-import { IRequestOptions, TUseMutationOptions } from '@/services/interface';
+import { TUseMutationOptions } from '@/services/interface';
 import { useMutation } from '@tanstack/react-query';
 
 import { getAccessToken } from '..';
 
 async function createThermometerRequest(
-  request: PostSimulatorThermometerRequest,
-  requestOptions?: IRequestOptions
+  request: PostSimulatorThermometerRequest
 ) {
   const jwt = getAccessToken();
 
@@ -18,7 +17,6 @@ async function createThermometerRequest(
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
-    signal: requestOptions?.signal,
   });
 }
 
@@ -27,7 +25,7 @@ export function useCreateThermometerMutation(
 ) {
   return useMutation({
     mutationKey: ['createThermometerRequest'],
-    mutationFn: createThermometerRequest,
+    mutationFn: (args) => createThermometerRequest(...args),
     ...options,
   });
 }

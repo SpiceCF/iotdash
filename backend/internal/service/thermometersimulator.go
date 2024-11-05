@@ -44,6 +44,7 @@ var _ IThermometerSimulatorService = (*ThermometerSimulatorService)(nil)
 type ThermometerSimulatorService struct {
 	engines map[uuid.UUID]*thermoengine.ThermoEngine
 	em      *SimulatorEngineMonitor
+	ts      IThermometerService
 }
 
 func NewThermometerSimulatorService(ts IThermometerService) *ThermometerSimulatorService {
@@ -52,7 +53,23 @@ func NewThermometerSimulatorService(ts IThermometerService) *ThermometerSimulato
 		em: &SimulatorEngineMonitor{
 			ts: ts,
 		},
+		ts: ts,
 	}
+}
+
+func (s *ThermometerSimulatorService) SyncActiveThermometers() error {
+	thermometers, err := s.ts.ListActiveThermometers()
+	if err != nil {
+		return err
+	}
+
+	for _, tm := range thermometers {
+		te := thermoengine.NewThermoEngine(tm)
+		te.SetMonitor(s.em)
+		s.engines[tm.ID] = te
+	}
+
+	return nil
 }
 
 func (s *ThermometerSimulatorService) LoadThermometers(thermometers []*entity.Thermometer) error {

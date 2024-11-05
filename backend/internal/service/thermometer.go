@@ -14,6 +14,7 @@ type IThermometerService interface {
 	ListByOwnerID(ownerID uuid.UUID) ([]*entity.Thermometer, error)
 	GetHistoryByThermometerID(id uuid.UUID) ([]*entity.ThermometerHistory, error)
 	AddThermometerHistory(history *entity.ThermometerHistory) error
+	ListActiveThermometers() ([]*entity.Thermometer, error)
 }
 
 var _ IThermometerService = (*ThermometerService)(nil)
@@ -50,6 +51,10 @@ func (s *ThermometerService) GetByID(id uuid.UUID) (*entity.Thermometer, error) 
 
 func (s *ThermometerService) ListByOwnerID(ownerID uuid.UUID) ([]*entity.Thermometer, error) {
 	return s.tmr.ListByOwnerID(ownerID)
+}
+
+func (s *ThermometerService) ListActiveThermometers() ([]*entity.Thermometer, error) {
+	return s.tmr.ListActiveThermometers()
 }
 
 func (s *ThermometerService) GetHistoryByThermometerID(id uuid.UUID) ([]*entity.ThermometerHistory, error) {

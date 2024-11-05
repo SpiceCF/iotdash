@@ -311,13 +311,15 @@ function AddDeviceDialog() {
   });
 
   function onSubmit(values: z.infer<typeof formSchemaAddDevice>) {
-    createSensorMutation.mutate({
-      body: {
-        deviceId: values.deviceID as unknown as object,
-        name: values.name,
-        type: 'thermometer',
+    createSensorMutation.mutate([
+      {
+        body: {
+          deviceId: values.deviceID as unknown as object,
+          name: values.name,
+          type: 'thermometer',
+        },
       },
-    });
+    ]);
   }
 
   return (
@@ -346,7 +348,7 @@ function AddDeviceDialog() {
                 name="deviceID"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Connection</FormLabel>
+                    <FormLabel>Device ID</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Example. 123e4567-e89b-12d3-a456-426614174000"
