@@ -28,7 +28,12 @@ import {
 } from '@/components/ui/table';
 
 export function DeviceDashboard({ deviceID }: { deviceID: string }) {
-  const { data: thermometerHistories } = useListThermometerHistory(deviceID);
+  const { data: thermometerHistories } = useListThermometerHistory(
+    deviceID,
+    {
+      refetchInterval: 3000,
+    }
+  );
 
   const data =
     thermometerHistories?.data?.map((history) => ({

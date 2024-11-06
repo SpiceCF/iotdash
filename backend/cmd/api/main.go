@@ -25,6 +25,12 @@ func main() {
 	thermometerService := service.NewThermometerService(thermometerRepository)
 
 	simulatorService := service.NewThermometerSimulatorService(thermometerService)
+	if err = simulatorService.SyncActiveThermometers(); err != nil {
+		panic(err)
+	}
+	if err = simulatorService.StartAllEngines(); err != nil {
+		panic(err)
+	}
 
 	userRepository := sqlite.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)

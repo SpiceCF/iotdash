@@ -35,6 +35,7 @@ func (h *RouteHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 	rg.GET("", h.listSensors, h.middlewares.VerifyTokenMiddleware())
 	rg.POST("", h.createSensor, h.middlewares.VerifyTokenMiddleware())
 	rg.GET("/:id/logs", h.listSensorLogs, h.middlewares.VerifyTokenMiddleware())
+	rg.GET("/:id/logs/metric", h.listSensorMetricLogs, h.middlewares.VerifyTokenMiddleware())
 	rg.POST(
 		fmt.Sprintf("/%s/logs", entity.SensorTypeThermometer),
 		h.createThermometerLog(),
@@ -70,6 +71,23 @@ func (h *RouteHandler) RegisterRoutes(e *echo.Group, api *swag.API) {
 				http.StatusOK,
 				"ListSensorLogsResponse",
 				endpoint.SchemaResponseOption(new(ListSensorLogsResponse)),
+			),
+		),
+		endpoint.New(
+			http.MethodGet, "/{id}/logs/metric",
+			endpoint.Tags("Sensor"),
+			endpoint.Summary("List sensor metric logs"),
+			endpoint.OperationID("listSensorMetricLogs"),
+			endpoint.Description("List sensor metric logs"),
+			endpoint.Path("id", "string", "Sensor ID", true),
+			endpoint.Query("key", "string", "Metric key ex. temperature, humidity", true),
+			endpoint.Query("from", "string", "From timestamp with format RFC3339", true),
+			endpoint.Query("to", "string", "To timestamp with format RFC3339", true),
+			endpoint.Query("interval", "string", "Interval (day, hour, minute)", true),
+			endpoint.Response(
+				http.StatusOK,
+				"ListSensorMetricLogsResponse",
+				endpoint.SchemaResponseOption(new(ListSensorMetricLogsResponse)),
 			),
 		),
 		endpoint.New(

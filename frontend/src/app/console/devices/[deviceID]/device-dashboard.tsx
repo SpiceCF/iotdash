@@ -1,7 +1,8 @@
 'use client';
 
-import { useListSensorLogs } from '@/services/sensor';
+import { useListSensorLogs, useListSensorMetricLogs } from '@/services/sensor';
 import NumberFlow from '@number-flow/react';
+import * as dateFns from 'date-fns';
 import {
   AlertCircle,
   HistoryIcon,
@@ -43,8 +44,55 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+const fromDate = dateFns.formatRFC3339(dateFns.addDays(new Date(), -1));
+const toDate = dateFns.formatRFC3339(dateFns.addDays(new Date(), 1));
+const refetchInterval = 3000;
+
 export function DeviceDashboard({ deviceID }: { deviceID: string }) {
-  const { data: sensorLogs } = useListSensorLogs(deviceID);
+  const { data: sensorLogs } = useListSensorLogs(deviceID, {
+    refetchInterval,
+  });
+  const { data: sensorMetricLogs } = useListSensorMetricLogs(
+    {
+      id: deviceID,
+      key: 'temperature',
+      from: fromDate,
+      to: toDate,
+      interval: 'minute',
+    },
+    {
+      refetchInterval,
+    }
+  );
+
+  const metricLogs = (sensorMetricLogs?.data || {}) as Record<
+    string,
+    { value: number; timestamp: string }[]
+  >;
+
+  const processedMetricLogs = Object.entries(metricLogs).reduce(
+    (acc, [type, logs]) => {
+      logs.forEach((log) => {
+        if (!acc[log.timestamp]) {
+          acc[log.timestamp] = { avg: null, min: null, max: null };
+        }
+        acc[log.timestamp][type.toLowerCase() as keyof (typeof acc)[string]] =
+          log.value ?? null;
+      });
+      return acc;
+    },
+    {} as Record<
+      string,
+      { avg: number | null; min: number | null; max: number | null }
+    >
+  );
+
+  const chartData = Object.entries(processedMetricLogs).map(
+    ([time, metrics]) => ({
+      time,
+      ...metrics,
+    })
+  );
 
   const data =
     sensorLogs?.data?.map((log) => ({
@@ -100,7 +148,7 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                 },
               }}
             >
-              <LineChart data={data}>
+              <LineChart data={chartData}>
                 <CartesianGrid
                   strokeDasharray="3 3"
                   className="stroke-muted/30"
@@ -132,8 +180,22 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Line
                   type="monotone"
-                  dataKey="temperature"
-                  stroke="var(--color-temperature)"
+                  dataKey="avg"
+                  stroke="red"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="min"
+                  stroke="green"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="max"
+                  stroke="blue"
                   strokeWidth={2}
                   dot={false}
                 />
@@ -200,8 +262,12 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               ) : (
                 data.splice(0, 10).map((row, index) => (
                   <TableRow key={index}>
-                    <TableCell className="text-muted-foreground">{`2024-10-24 ${row.time}:00.00000+07:00`}</TableCell>
-                    <TableCell className="font-medium">{`${row.temperature} °C`}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {`${row.time as unknown as string}`}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {`${row.temperature} °C`}
+                    </TableCell>
                   </TableRow>
                 ))
               )}

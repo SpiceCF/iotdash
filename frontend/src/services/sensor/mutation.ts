@@ -1,13 +1,10 @@
 import { PostSensorsRequest, sensorAPI } from '@/services/api-client';
-import { IRequestOptions, TUseMutationOptions } from '@/services/interface';
+import { TUseMutationOptions } from '@/services/interface';
 import { useMutation } from '@tanstack/react-query';
 
 import { getAccessToken } from '..';
 
-async function createSensorRequest(
-  request: PostSensorsRequest,
-  requestOptions?: IRequestOptions
-) {
+async function createSensorRequest(request: PostSensorsRequest) {
   const jwt = getAccessToken();
 
   return sensorAPI.postSensors(request, {
@@ -15,7 +12,6 @@ async function createSensorRequest(
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
-    signal: requestOptions?.signal,
   });
 }
 
@@ -24,7 +20,7 @@ export function useCreateSensorMutation(
 ) {
   return useMutation({
     mutationKey: ['createThermometerRequest'],
-    mutationFn: createSensorRequest,
+    mutationFn: (args) => createSensorRequest(...args),
     ...options,
   });
 }

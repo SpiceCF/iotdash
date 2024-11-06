@@ -23,10 +23,10 @@ item:
             mode: raw
             raw: |-
               {
-                "fullName": "John Doe",
-                "email": "john.doe@example.com",
-                "username": "johndoe",
-                "password": "password"
+                "fullName": "test",
+                "email": "test@test.com",
+                "username": "testuser",
+                "password": "testpassword"
               }
           url: "{{API_URL}}/auth/register"
         response: []
@@ -48,8 +48,8 @@ item:
             mode: raw
             raw: |-
               {
-                "username": "johndoe",
-                "password": "password"
+                "username": "testuser",
+                "password": "testpassword"
               }
           url: "{{API_URL}}/auth/login"
         response: []
@@ -73,4 +73,35 @@ item:
             - key: X-Requested-With
               value: XMLHttpRequest
           url: "{{API_URL}}/users/me"
+        response: []
+      - name: ListSensorMetricLogs
+        event:
+          - listen: prerequest
+            script:
+              type: text/javascript
+              exec: |-
+                console.log(pm.request);
+                pm.environment.set("SENSOR_ID", "a87b242d-6ff3-48a4-88bb-944351552ef5");
+          - listen: test
+            script:
+              type: text/javascript
+              exec: |-
+                console.log(pm.response.json());
+        request:
+          method: GET
+          url:
+            host: "{{API_URL}}"
+            path: "/sensors/{{SENSOR_ID}}/logs/metric"
+            query:
+              - key: key
+                value: "temperature"
+              - key: from
+                value: "2024-11-05T00:00:00Z"
+              - key: to
+                value: "2024-11-05T23:59:59Z"
+              - key: interval
+                value: "minute"
+          header:
+            - key: Authorization
+              value: Bearer {{TOKEN}}
         response: []

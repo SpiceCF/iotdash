@@ -2,7 +2,7 @@ import { simulatorThermometerAPI } from '@/services/api-client';
 import { queryOptions, useQuery } from '@tanstack/react-query';
 
 import { getAccessToken } from '..';
-import { IRequestOptions } from '../interface';
+import { IRequestOptions, TUseQueryOptions } from '../interface';
 
 export type Thermometer = NonNullable<
   Awaited<ReturnType<typeof listThermometer>>['data']
@@ -17,19 +17,22 @@ async function listThermometer(jwt: string, requestOptions?: IRequestOptions) {
   });
 }
 
-export function listThermometerQueryOptions() {
+export function listThermometerQueryOptions(
+  options?: TUseQueryOptions<typeof listThermometer>
+) {
   const jwt = getAccessToken();
 
   return queryOptions({
     queryKey: ['listThermometer', jwt],
     queryFn: ({ signal }) => listThermometer(jwt, { signal }),
+    ...options,
   });
 }
 
-export function useListThermometer() {
-  return useQuery({
-    ...listThermometerQueryOptions(),
-  });
+export function useListThermometer(
+  options?: TUseQueryOptions<typeof listThermometer>
+) {
+  return useQuery(listThermometerQueryOptions(options));
 }
 
 export type ThermometerHistory = NonNullable<
@@ -53,19 +56,22 @@ async function listThermometerHistory(
   );
 }
 
-export function listThermometerHistoryQueryOptions(deviceID: string) {
+export function listThermometerHistoryQueryOptions(
+  deviceID: string,
+  options?: TUseQueryOptions<typeof listThermometerHistory>
+) {
   const jwt = getAccessToken();
 
   return queryOptions({
     queryKey: ['listThermometerHistory', jwt, deviceID],
     queryFn: ({ signal }) =>
       listThermometerHistory({ deviceID, jwt }, { signal }),
+    ...options,
   });
 }
 
-export function useListThermometerHistory(deviceID: string) {
-  return useQuery({
-    ...listThermometerHistoryQueryOptions(deviceID),
-    refetchInterval: 3000,
-  });
+export function useListThermometerHistory(
+  ...options: Parameters<typeof listThermometerHistoryQueryOptions>
+) {
+  return useQuery(listThermometerHistoryQueryOptions(...options));
 }

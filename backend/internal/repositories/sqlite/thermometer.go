@@ -14,6 +14,7 @@ type IThermometerRepository interface {
 	ListByOwnerID(ownerID uuid.UUID) ([]*entity.Thermometer, error)
 	GetHistoryByThermometerID(id uuid.UUID) ([]*entity.ThermometerHistory, error)
 	AddThermometerHistory(history *entity.ThermometerHistory) error
+	ListActiveThermometers() ([]*entity.Thermometer, error)
 }
 
 var _ IThermometerRepository = (*ThermometerRepository)(nil)
@@ -62,6 +63,14 @@ func (r *ThermometerRepository) GetHistoryByThermometerID(id uuid.UUID) ([]*enti
 		return nil, err
 	}
 	return history, nil
+}
+
+func (r *ThermometerRepository) ListActiveThermometers() ([]*entity.Thermometer, error) {
+	var thermometers []*entity.Thermometer
+	if err := r.db.Where(&entity.Thermometer{IsActive: true}).Find(&thermometers).Error; err != nil {
+		return nil, err
+	}
+	return thermometers, nil
 }
 
 func (r *ThermometerRepository) AddThermometerHistory(history *entity.ThermometerHistory) error {

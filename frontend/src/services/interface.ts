@@ -1,4 +1,8 @@
-import { UseMutationOptions } from '@tanstack/react-query';
+import {
+  DefaultError,
+  UseMutationOptions,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 
 export interface IRequestOptions {
   signal?: AbortSignal;
@@ -9,5 +13,11 @@ export type TUseMutationOptions<
 > = UseMutationOptions<
   Awaited<ReturnType<TMutationFunc>>,
   Error,
-  Parameters<TMutationFunc>[0]
+  Parameters<TMutationFunc>
 >;
+
+export type TUseQueryOptions<TQueryFunc extends (...args: never) => unknown> =
+  Omit<
+    UseQueryOptions<Awaited<ReturnType<TQueryFunc>>, DefaultError>,
+    'queryKey' | 'queryFn'
+  >;
