@@ -172,21 +172,21 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                 <Line
                   type="monotone"
                   dataKey="avg"
-                  stroke="red"
+                  stroke="hsl(var(--chart-1))"
                   strokeWidth={2}
                   dot={false}
                 />
                 <Line
                   type="monotone"
                   dataKey="min"
-                  stroke="green"
+                  stroke="hsl(var(--chart-2))"
                   strokeWidth={2}
                   dot={false}
                 />
                 <Line
                   type="monotone"
                   dataKey="max"
-                  stroke="blue"
+                  stroke="hsl(var(--chart-3))"
                   strokeWidth={2}
                   dot={false}
                 />
@@ -264,32 +264,6 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
               )}
             </TableBody>
           </Table>
-          <div className="flex items-end justify-end p-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious href="#" />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>
-                    2
-                  </PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
         </CardContent>
       </Card>
     </div>
