@@ -89,7 +89,7 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
 
   const chartData = Object.entries(processedMetricLogs).map(
     ([time, metrics]) => ({
-      time,
+      time: dateFns.getUnixTime(time),
       ...metrics,
     })
   );
@@ -157,23 +157,14 @@ export function DeviceDashboard({ deviceID }: { deviceID: string }) {
                   type="category"
                   dataKey="time"
                   className="text-xs text-muted-foreground"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  minTickGap={32}
                   tickFormatter={(value) => {
-                    const date = new Date(value);
-                    return date.toLocaleTimeString('en-US', {
-                      timeZone: 'Asia/Bangkok',
-                      timeStyle: 'medium',
-                      hour12: false,
-                    });
+                    return dateFns.format(dateFns.fromUnixTime(value), 'HH:mm');
                   }}
                   reversed
                 />
                 <YAxis
                   className="text-xs text-muted-foreground"
-                  domain={[0, 100]}
+                  domain={[0, 120]}
                   allowDataOverflow
                   interval="preserveStartEnd"
                 />
