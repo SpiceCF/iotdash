@@ -16,7 +16,6 @@ import {
 function ConsoleBreadcrumb() {
   const params = useParams();
   const segments = useSelectedLayoutSegments();
-
   const paramsArray = Object.keys(params).map((key) => params[key]);
 
   return (
